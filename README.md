@@ -10,6 +10,7 @@
 
 ## Zkouška
 Rozhodnutí známky 1-3.
+Povolené libovolné vlastnoručně psané materiály.
 
 ## Poznámky
 
