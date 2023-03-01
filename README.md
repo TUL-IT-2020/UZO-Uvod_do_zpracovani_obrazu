@@ -3,6 +3,8 @@
 ## Cvičení
 1 povolená absence.
 
+1. [[C01IT.pdf|cvičení]]
+
 ## Přednášky
 1. [[ME_UZO_prezentacePřednášky_01.pdf]]
 2. [[ME_UZO_prezentacePřednášky_02.pdf]]
