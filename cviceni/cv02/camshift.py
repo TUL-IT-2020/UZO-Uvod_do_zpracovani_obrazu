@@ -3,12 +3,17 @@
 import numpy as np
 import cv2
 
-def img2hue_histogram(img):
-    """ Convert 
+
+def img2hue_histogram(img: np.ndarray) -> np.ndarray:
+    """ Convert BGR image to Hue histogram
+    get:
+        img - BGR image
+    return:
+        hist - Hue histogram
     """
     # RGB to HSV
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    hue = hsv[:,:,0]
+    hue = hsv[:, :, 0]
 
     # Histogram
     #max_value = 256
@@ -20,8 +25,13 @@ def img2hue_histogram(img):
 
     return hist
 
-def get_center_of_picture(picture):
+
+def get_center_of_picture(picture: np.ndarray) -> tuple():
     """ Get center of picture
+    get:
+        picture - 2D numpy array
+    return:
+        x_center, y_center - center of picture
     """
     pixel_sum = np.sum(picture)
 
@@ -30,14 +40,21 @@ def get_center_of_picture(picture):
     for x in range(picture.shape[1]):
         for y in range(picture.shape[0]):
             weight_x += picture[y, x] * x
-            weight_y += picture[y, x] * y  
-    
+            weight_y += picture[y, x] * y
+
     x_center = weight_x / pixel_sum
-    y_center = weight_y / pixel_sum 
+    y_center = weight_y / pixel_sum
     return x_center, y_center
 
+
 class CamShift():
+    """ CamShift class """
+
     def __init__(self, pattern_file) -> None:
+        """ Init
+        get:
+            pattern_file - path to pattern file
+        """
         patern_bgr = cv2.imread(pattern_file)
         y, x, z = patern_bgr.shape
         self.x_size = x
@@ -47,10 +64,15 @@ class CamShift():
 
         self.last_positon = None
 
-    def _get_first_positon(self, img):
+    def _get_first_positon(self, img) -> tuple():
+        """ Get first position of pattern in image
+        get:
+            img - BGR image
+        return:
+            x_center, y_center - center of pattern
+        """
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        hue = hsv[:,:,0]
-        #hist, b = np.histogram(hue, 256, (0, 256))
+        hue = hsv[:, :, 0]
 
         # img projection
         hue_projection = self.pattern_hue_hist[hue]
@@ -58,14 +80,20 @@ class CamShift():
         # get center of hue projection
         x_center, y_center = get_center_of_picture(hue_projection)
         return x_center, y_center
-    
-    def _get_next_positon(self, next_img):
+
+    def _get_next_positon(self, next_img) -> tuple():
+        """ Get next position of pattern in image
+        get:
+            next_img - BGR image
+        return:
+            x_center, y_center - center of pattern
+        """
         x1, y1 = self.last_positon[0]
         x2, y2 = self.last_positon[1]
         crop_img = next_img[y1:y2, x1:x2]
 
         hsv = cv2.cvtColor(crop_img, cv2.COLOR_BGR2HSV)
-        hue = hsv[:,:,0]
+        hue = hsv[:, :, 0]
 
         hue_projection = self.pattern_hue_hist[hue]
 
@@ -87,5 +115,3 @@ class CamShift():
 
         self.last_positon = ((x1, y1), (x2, y2))
         return ((x1, y1), (x2, y2))
-
-    
