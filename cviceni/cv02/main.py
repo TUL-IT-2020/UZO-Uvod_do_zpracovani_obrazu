@@ -21,9 +21,6 @@ def process_image(image):
     """ Process image
     """
     bgr = cv2.imread(image)
-
-    # picure size
-    print("Image size: {0}".format(rgb.shape))
     
     # Plot
     plt.figure()
@@ -43,6 +40,10 @@ def process_image(image):
     plt.ylabel("Count")
 
     plt.show()
+
+    # picure size
+    print("Image size: {0}".format(rgb.shape))
+
     plt.waitforbuttonpress()
 
 
@@ -53,31 +54,33 @@ if __name__ == "__main__":
     clear()
     plt.close('all')
 
+    #process_image(pattern_file)
+    #exit()
+
     camshift = CamShift(pattern_file)
     
-    patern_bgr = cv2.imread(pattern_file)
-    pattern_hue_hist = img2hue_histogram(patern_bgr)
-
     cap = cv2.VideoCapture(video_file)
     while True:
         ret, bgr = cap.read()
         if not ret:
             break
 
+        (x1, y1), (x2, y2) = camshift.next_positon(bgr)
+
+        cv2.rectangle(bgr, (x1, y1), (x2, y2), (0, 255, 0))
+        cv2.imshow('Image', bgr)
+
+        """
+        patern_bgr = cv2.imread(pattern_file)
+        pattern_hue_hist = img2hue_histogram(patern_bgr)
         hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
         hue = hsv[:,:,0]
-        hist, b = np.histogram(hue, 256, (0, 256))
 
         # img projection
         hue_projection = pattern_hue_hist[hue]
-
-        (x1, y1), (x2, y2) = camshift.next_positon(bgr)
-
-        cv2.rectangle(hue_projection, (x1, y1), (x2, y2), (255, 255, 0))
-        cv2.rectangle(bgr, (x1, y1), (x2, y2), (0, 255, 0))
-        #cv2.imshow('Image', hue_projection)
-        cv2.imshow('Image', bgr)
-
+        cv2.rectangle(hue_projection, (x1, y1), (x2, y2), (255, 255, 255))
+        cv2.imshow('Image', hue_projection)
+        """
         
         # Wait for key
         key = 0xFF & cv2.waitKey(30)

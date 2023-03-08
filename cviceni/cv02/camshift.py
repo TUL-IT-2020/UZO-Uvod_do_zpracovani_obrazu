@@ -11,7 +11,9 @@ def img2hue_histogram(img):
     hue = hsv[:,:,0]
 
     # Histogram
-    hist, b = np.histogram(hue, bins=256, range=(0, 256))
+    #max_value = 256
+    max_value = 180
+    hist, b = np.histogram(hue, bins=max_value, range=(0, max_value))
 
     # normalize histogram
     hist = hist / np.max(hist)
@@ -43,22 +45,47 @@ class CamShift():
 
         self.pattern_hue_hist = img2hue_histogram(patern_bgr)
 
-    def next_positon(self, next_img) -> tuple():
-        hsv = cv2.cvtColor(next_img, cv2.COLOR_BGR2HSV)
+        self.last_positon = None
+
+    def _get_first_positon(self, img):
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         hue = hsv[:,:,0]
-        hist, b = np.histogram(hue, 256, (0, 256))
+        #hist, b = np.histogram(hue, 256, (0, 256))
 
         # img projection
         hue_projection = self.pattern_hue_hist[hue]
 
         # get center of hue projection
         x_center, y_center = get_center_of_picture(hue_projection)
+        return x_center, y_center
+    
+    def _get_next_positon(self, next_img):
+        x1, y1 = self.last_positon[0]
+        x2, y2 = self.last_positon[1]
+        crop_img = next_img[y1:y2, x1:x2]
+
+        hsv = cv2.cvtColor(crop_img, cv2.COLOR_BGR2HSV)
+        hue = hsv[:,:,0]
+
+        hue_projection = self.pattern_hue_hist[hue]
+
+        x_center, y_center = get_center_of_picture(hue_projection)
+        x_center += x1
+        y_center += y1
+        return x_center, y_center
+
+    def next_positon(self, next_img) -> tuple():
+        if self.last_positon == None:
+            x_center, y_center = self._get_first_positon(next_img)
+        else:
+            x_center, y_center = self._get_next_positon(next_img)
 
         x1 = int(x_center - self.x_size/2)
         y1 = int(y_center - self.y_size/2)
         x2 = int(x_center + self.x_size/2)
         y2 = int(y_center + self.y_size/2)
 
+        self.last_positon = ((x1, y1), (x2, y2))
         return ((x1, y1), (x2, y2))
 
     
