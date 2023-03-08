@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+import os
+
 plt.ion()
 clear = lambda: os.system('cls')
 clear()
@@ -25,3 +27,4 @@ while True:
         break
     
 cv2.destroyAllWindows()
+print("Done")
