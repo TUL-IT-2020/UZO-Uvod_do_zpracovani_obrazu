@@ -12,41 +12,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import os
+from camshift import *
 
 pattern_file = "cv02_vzor_hrnecek.bmp"
 video_file = "cv02_hrnecek.mp4"
-
-def CamShift():
-    pass
-
-def rgb2hsv_histogram(rgb):
-    """ Convert RGB image to HSV histogram
-    """
-    # RGB to HSV
-    hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
-    hue = hsv[:,:,0]
-
-    # Histogram
-    hist, b = np.histogram(hue, bins=256, range=(0, 256))
-
-    # normalize histogram
-    hist = hist / np.max(hist)
-
-    return hist
-
-def histogram_center(hist):
-    """ Calculate center of histogram
-    """
-    pass
-    
 
 def process_image(image):
     """ Process image
     """
     bgr = cv2.imread(image)
-    rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
-    hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
-    hist = rgb2hsv_histogram(rgb)
 
     # picure size
     print("Image size: {0}".format(rgb.shape))
@@ -54,11 +28,15 @@ def process_image(image):
     # Plot
     plt.figure()
     plt.subplot(1, 3, 1)
+    rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
     plt.imshow(rgb)
+
     plt.subplot(1, 3, 2)
+    hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
     plt.imshow(hsv)
 
     plt.subplot(1, 3, 3)
+    hist = img2hue_histogram(bgr)
     plt.plot(hist)
     plt.title("Histogram")
     plt.xlabel("Hue")
@@ -67,6 +45,7 @@ def process_image(image):
     plt.show()
     plt.waitforbuttonpress()
 
+
 if __name__ == "__main__":
     plt.ion()
     #clear = lambda: os.system('cls')
@@ -74,32 +53,30 @@ if __name__ == "__main__":
     clear()
     plt.close('all')
 
+    camshift = CamShift(pattern_file)
+    
+    patern_bgr = cv2.imread(pattern_file)
+    pattern_hue_hist = img2hue_histogram(patern_bgr)
+
     cap = cv2.VideoCapture(video_file)
-
-    # Velikost ze vzoru
-    patern_rgb = cv2.imread(pattern_file)
-    x, y, z = patern_rgb.shape
-
-    patern_hue_hist = rgb2hsv_histogram(patern_rgb)
-
     while True:
         ret, bgr = cap.read()
         if not ret:
             break
-        hsv = cv2.cvtColor(bgr, cv2.COLOR_RGB2HSV)
+
+        hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
         hue = hsv[:,:,0]
         hist, b = np.histogram(hue, 256, (0, 256))
-        new = patern_hue_hist[hue]
-        #out = hist[hue]
 
+        # img projection
+        hue_projection = pattern_hue_hist[hue]
 
-        x1 = 100
-        y1 = 100
-        x2 = x1+x
-        y2 = y1+y
+        (x1, y1), (x2, y2) = camshift.next_positon(bgr)
+
+        cv2.rectangle(hue_projection, (x1, y1), (x2, y2), (255, 255, 0))
         cv2.rectangle(bgr, (x1, y1), (x2, y2), (0, 255, 0))
-        cv2.imshow('Image', new)
-        #cv2.imshow('Image', bgr)
+        #cv2.imshow('Image', hue_projection)
+        cv2.imshow('Image', bgr)
 
         
         # Wait for key
