@@ -31,6 +31,34 @@ def project_point(point : tuple(), M : np.array) -> tuple():
     vector = np.dot(M, vector)
     return (vector[0], vector[1])
 
+def valid_point(point : tuple(), Y : int, X : int) -> bool:
+    """ Validate point coordinates
+    """
+    x, y = point
+    if x < 0 or x >= X or y < 0 or y >= Y:
+        return False
+    return True
+
+def project_pixels(source, M, destination) -> np.array:
+    """ Project pixels
+    get:
+        source - source image
+        M - inverse transformation matrix
+        destination - blank destination image
+    return:
+        destination - transformed image
+    """
+    s_rows, s_cols, _ = source.shape
+    rows, cols, _ = destination.shape
+    for x in range(cols):
+        for y in range(rows):
+            point = project_point((x, y), M)
+            y_orig = int(point[1])
+            x_orig = int(point[0])
+            if valid_point(point, s_rows, s_cols):
+                destination[y, x] = source[y_orig, x_orig]
+    return destination
+
 def project_image(image, M):
     """ Project image
     """
@@ -44,14 +72,7 @@ def project_image(image, M):
     # project
     rows, cols, _ = image.shape
     dst = np.zeros((rows, cols, 3), np.uint8)
-    for x in range(cols):
-        for y in range(rows):
-            point = project_point((x, y), M)
-            if point[0] < 0 or point[0] >= cols or point[1] < 0 or point[1] >= rows:
-                continue
-            y_orig = int(point[1])
-            x_orig = int(point[0])
-            dst[y, x] = image[y_orig, x_orig]
+    dst = project_pixels(image, M, dst)
     plt.imshow(dst)
     plt.title("Projected")
 
