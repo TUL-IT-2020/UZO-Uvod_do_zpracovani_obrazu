@@ -17,11 +17,12 @@ from camshift import *
 pattern_file = "cv02_vzor_hrnecek.bmp"
 video_file = "cv02_hrnecek.mp4"
 
+
 def process_image(image):
     """ Process image
     """
     bgr = cv2.imread(image)
-    
+
     # Plot
     plt.figure()
     plt.subplot(1, 3, 1)
@@ -50,15 +51,15 @@ def process_image(image):
 if __name__ == "__main__":
     plt.ion()
     #clear = lambda: os.system('cls')
-    clear = lambda: os.system('clear')
+    def clear(): return os.system('clear')
     clear()
     plt.close('all')
 
-    #process_image(pattern_file)
-    #exit()
+    # process_image(pattern_file)
+    # exit()
 
     camshift = CamShift(pattern_file)
-    
+
     cap = cv2.VideoCapture(video_file)
     while True:
         ret, bgr = cap.read()
@@ -81,12 +82,12 @@ if __name__ == "__main__":
         cv2.rectangle(hue_projection, (x1, y1), (x2, y2), (255, 255, 255))
         cv2.imshow('Image', hue_projection)
         """
-        
+
         # Wait for key
         key = 0xFF & cv2.waitKey(30)
         if key == 27:
             break
-        
+
     cv2.destroyAllWindows()
     print("Done")
 
