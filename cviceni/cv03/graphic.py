@@ -15,6 +15,18 @@ def generate_rotation_matrix(center : tuple() = (0,0), angle: float = 0) -> np.a
     )
     return M
 
+def generate_translation_matrix(move): 
+    """ Generate movement matrix
+    """
+    x_move, y_move = move
+    M = np.array([
+        [1, 0, x_move],
+        [0, 1, y_move],
+        [0, 0, 1]
+        ]
+    )
+    return M
+
 def transform_coords(point : tuple(), M : np.array) -> tuple():
     """ Project point
     """
