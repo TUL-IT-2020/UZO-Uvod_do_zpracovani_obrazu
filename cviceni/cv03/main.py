@@ -11,7 +11,9 @@ import cv2
 import os
 from graphic import *
 
-def calculate_shape(image, angle):
+DEBUG = True
+
+def calculate_shape(image, angle : float = 0) -> tuple():
     rows, cols, _ = image.shape
     angle = np.deg2rad(angle)
     cos = np.cos(angle)
@@ -20,14 +22,17 @@ def calculate_shape(image, angle):
     y = cols * sin + rows * cos
     return (int(x), int(y))
 
-def calculate_translation(image, angle):
+def calculate_translation(image, angle : float = 0) -> tuple():
     image_new_shape = calculate_shape(image, angle)
     rows, cols, _ = image.shape
     x = image_new_shape[0] - rows
     y = image_new_shape[1] - cols
-    x = (image_new_shape[0] - rows)//2
-    y = 0
-    return (int(x), int(y))
+    return (int(-x//2), int(-y//2))
+
+def center_image(old_image_shapem, new_image_shape) -> tuple():
+    x = (new_image_shape[0] - old_image_shapem[0])
+    y = new_image_shape[1] - old_image_shapem[1]
+    return (int(x//2), int(y//2)) 
 
 def project_image(image, M):
     """ Project image
@@ -48,7 +53,7 @@ def project_image(image, M):
 
     plt.waitforbuttonpress()
 
-def rotate_image(image, degrees):
+def rotate_image(image, degrees : float = 0):
     # Plot
     plt.figure()
     plt.subplot(1, 3, 1)
@@ -58,6 +63,7 @@ def rotate_image(image, degrees):
     plt.subplot(1, 3, 2)
     # project
     rows, cols, _ = image.shape
+    center = (rows//2, cols//2)
     dst = np.zeros((rows, cols, 3), np.uint8)
     rotation_matrix = generate_rotation_matrix(center, degrees)
     dst = project_pixels(image, rotation_matrix, dst)
@@ -67,22 +73,28 @@ def rotate_image(image, degrees):
     plt.subplot(1, 3, 3)
     # reshaped
     rows, cols = calculate_shape(image, degrees)
-    print(rows, "\n", cols)
     move = calculate_translation(image, degrees)
     movement_matrix = generate_translation_matrix(move)
-    print("movement_matrix:\n", movement_matrix)
-    print("rotation_matrix:\n", rotation_matrix)
-    rot = (rotation_matrix@movement_matrix)
-    print("rot:\n", rot)
+    rotation_and_shift = (rotation_matrix@movement_matrix)
+
+    if DEBUG:
+        print("degrees:", degrees)
+        print("rows:", rows, "cols:", cols)
+        print("rotation_matrix:\n", rotation_matrix)
+        print("movement_matrix:\n", movement_matrix)
+        print("rotation_and_shift:\n", rotation_and_shift)
+        print()
+
     dst = np.zeros((rows, cols, 3), np.uint8)
-    dst = project_pixels(image, rot, dst)
+    dst = project_pixels(image, rotation_and_shift, dst)
     plt.imshow(dst)
     plt.title("Reshaped")
 
     plt.show()
     plt.waitforbuttonpress()
+    plt.close()    
 
-def rotate_image_cv2(image, angle):
+def rotate_image_cv2(image, angle : float = 0):
     """ Rotate image
     """
     # Plot
@@ -120,14 +132,11 @@ if __name__ == "__main__":
     img = cv2.imread(img_file)
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    rows, cols, _ = img_rgb.shape
-    center = (rows, 0)
+    # 0, 90, 180, 270, 360
+    rotate_image(img_rgb, 34)
+    rotate_image(img_rgb, 120)
+    rotate_image(img_rgb, 220)
+    rotate_image(img_rgb, 285)
 
-    # project_image(
-    #     img_rgb, 
-    #     generate_rotation_matrix(center, 45)
-    # )
-
-    rotate_image(img, 30)
 
 
