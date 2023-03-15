@@ -23,7 +23,7 @@ def generate_rotation_matrix(center : tuple() = (0,0), angle: float = 0) -> np.a
     )
     return M
 
-def project_point(point : tuple(), M : np.array) -> tuple():
+def transform_coords(point : tuple(), M : np.array) -> tuple():
     """ Project point
     """
     x, y = point
@@ -31,10 +31,11 @@ def project_point(point : tuple(), M : np.array) -> tuple():
     vector = np.dot(M, vector)
     return (vector[0], vector[1])
 
-def valid_point(point : tuple(), Y : int, X : int) -> bool:
+def valid_point(coord : tuple(), shape : tuple()) -> bool:
     """ Validate point coordinates
     """
-    x, y = point
+    x, y = coord
+    X, Y, _ = shape
     if x < 0 or x >= X or y < 0 or y >= Y:
         return False
     return True
@@ -48,16 +49,23 @@ def project_pixels(source, M, destination) -> np.array:
     return:
         destination - transformed image
     """
-    s_rows, s_cols, _ = source.shape
-    rows, cols, _ = destination.shape
-    for x in range(cols):
-        for y in range(rows):
-            point = project_point((x, y), M)
-            y_orig = int(point[1])
-            x_orig = int(point[0])
-            if valid_point(point, s_rows, s_cols):
+    Y, X, _ = destination.shape
+    for x in range(X):
+        for y in range(Y):
+            coord = transform_coords((x, y), M)
+            y_orig = int(coord[1])
+            x_orig = int(coord[0])
+            if valid_point(coord, source.shape):
                 destination[y, x] = source[y_orig, x_orig]
     return destination
+
+def warpAffine(image, M, dsize):
+    """ Warp affine
+    """
+    rows, cols, _ = dsize
+    dst = np.zeros((rows, cols, 3), np.uint8)
+    dst = project_pixels(image, M, dst)
+    return dst
 
 def project_image(image, M):
     """ Project image
