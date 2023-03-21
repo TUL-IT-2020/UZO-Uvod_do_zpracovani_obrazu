@@ -19,8 +19,8 @@ def calculate_shape(image, angle : float = 0) -> tuple():
     #return (int(x_max), int(y_max))
     coord = (rows, cols)
     x, y = transform_coords(coord, generate_rotation_matrix((0, 0), angle))
-    dim = max(abs(y), abs(x))
-    return (int(dim), int(dim))
+    dim = int(max(abs(y), abs(x)))
+    return (dim, dim)
 
 def calculate_translation(image, angle : float = 0) -> tuple():
     image_new_shape = calculate_shape(image, angle)
