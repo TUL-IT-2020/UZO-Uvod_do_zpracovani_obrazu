@@ -66,7 +66,7 @@ def project_pixels(source, M, destination) -> np.array:
 def warpAffine(image, M, dsize):
     """ Warp affine
     """
-    rows, cols, _ = dsize
+    rows, cols = dsize
     dst = np.zeros((rows, cols, 3), np.uint8)
     dst = project_pixels(image, M, dst)
     return dst
