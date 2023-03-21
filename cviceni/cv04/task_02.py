@@ -16,10 +16,6 @@ rentgen = "cv04_rentgen.bmp"
 
 if __name__ == '__main__':
     plt.ion()
-    if os.name == 'nt':
-        clear = lambda: os.system('cls')
-    elif os.name == 'posix':
-        clear = lambda: os.system('clear')
     clear()
     plt.close('all')
     

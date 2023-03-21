@@ -1,6 +1,15 @@
 # By Pytel
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+
+def clear():
+    """ Clear console """
+    if os.name == 'nt':
+        os.system('cls')
+    elif os.name == 'posix':
+        os.system('clear')
+    #os.system('cls' if os.name == 'nt' else 'clear')
 
 def intenzity_corecton(img, etalon) -> np.ndarray:
     """ Corect image intenzity
