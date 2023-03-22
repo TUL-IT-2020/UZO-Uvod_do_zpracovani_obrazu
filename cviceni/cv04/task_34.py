@@ -1,5 +1,4 @@
 # By Pytel
-import os
 import cv2
 from my_lib import *
 

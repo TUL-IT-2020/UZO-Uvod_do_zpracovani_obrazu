@@ -15,13 +15,12 @@ DEBUG = True
 
 def calculate_shape(image, angle : float = 0) -> tuple():
     rows, cols, _ = image.shape
-    # calculate diag
-    diag = np.sqrt(rows**2 + cols**2)
-    # calculate angle
-    if angle == 90 or angle == 180 or angle == 270 or angle == 360:
-        return (rows, cols)
-    else:
-        return(int(diag), int(diag))
+    #for coord in [(0, 0), (0, cols), (rows, 0), (rows, cols)]:
+    #return (int(x_max), int(y_max))
+    coord = (rows, cols)
+    x, y = transform_coords(coord, generate_rotation_matrix((0, 0), angle))
+    dim = int(max(abs(y), abs(x)))
+    return (dim, dim)
 
 def calculate_translation(image, angle : float = 0) -> tuple():
     image_new_shape = calculate_shape(image, angle)
