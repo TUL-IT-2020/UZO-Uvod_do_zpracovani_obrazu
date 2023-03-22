@@ -38,7 +38,32 @@ if __name__ == '__main__':
         ["Robot", "FFT"]
     )
 
-    filtHP_bgr = cv2.imread(filtHP)
+    # get spectrum
+    spectrum = fftshift(np.fft.fft2(gray_robot))
+
+    picture = robot
+    filter_files = [filtHP, filtHP1]
+    graph_titles = []
+    graph_pictures = []
+    for filter_file in filter_files:
+        # read filter
+        filter = cv2.imread(filter_file)
+        # apply filters
+        filtered_fft = np.multiply(spectrum, filter)
+        # fft to image
+        filtered_img = np.fft.ifft2(filtered_fft)
+        graph_titles.append(filter_file)
+        graph_titles.append(picture)
+        graph_pictures.append(filtered_fft)
+        graph_pictures.append(filtered_img)
+
+    plot_imgs(
+        graph_pictures,
+        graph_titles,
+        2
+    )
+
+    #filters = [filtDP, filtDP1]
 
 
 # END
