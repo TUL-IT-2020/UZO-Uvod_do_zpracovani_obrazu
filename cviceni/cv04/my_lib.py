@@ -1,4 +1,4 @@
-# By Pytel
+# By Pytel, mothspaws
 import os
 import numpy as np
 import matplotlib.pyplot as plt

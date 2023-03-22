@@ -1,6 +1,9 @@
-# By Pytel
+# By Pytel, mothspaws
 import cv2
-from my_lib import *
+import numpy as np
+import matplotlib.pyplot as plt
+
+from my_lib import clear
 
 """
 3) Z obrázku cv04c_robotC.bmp spočítejte 2D DFT (fft2 = np.fft.fft2(gray)) 
@@ -21,7 +24,36 @@ filtDP1 = "cv04c_filtDP1.bmp"
 
 # TODO: imlepment fftshift
 def fftshift(fft):
-    return np.fft.fftshift(fft)
+    Y = fft.shape[0]
+    X = fft.shape[1]
+    ret = np.zeros([Y,X], dtype=complex)
+    for y in range(Y):
+        for x in range(X):
+            ret[y][x] = fft[y][x]
+    for y in range(Y):
+        for x in range(X):
+            ret[y][x] = fft[(y+Y//2)%Y][(x+X//2)%X]
+    return ret
+
+# amplitudové spektrum
+def amp_spec(fft):
+    return np.log(np.abs(fft))
+
+def plot_imgs(imgs, titles, rows : int = 1, cmap=None):
+    # set plt sizes
+    plt.rcParams["figure.figsize"] = (10,2)
+    n = len(imgs)
+    cols = int(np.ceil(n/rows))
+    if cmap != None:
+        plt.set_cmap(cmap)
+    for i in range(n):
+        img = imgs[i]
+        plt.subplot(rows, cols, i+1)
+        plt.imshow(img) 
+        plt.colorbar(fraction=0.046, pad=0.04)
+        plt.title(titles[i])
+    plt.show()
+    plt.waitforbuttonpress()
 
 if __name__ == '__main__':
     plt.ion()
@@ -34,8 +66,8 @@ if __name__ == '__main__':
     robot_fft = np.fft.fft2(gray_robot)
 
     plot_imgs(
-        [robot_rgb, np.log(np.abs(fftshift(robot_fft)))],
-        ["Robot", "FFT"]
+        [robot_rgb, amp_spec(robot_fft), amp_spec(fftshift(robot_fft))],
+        ["Robot", "FFT", "FFTshift"]
     )
 
     # get spectrum
