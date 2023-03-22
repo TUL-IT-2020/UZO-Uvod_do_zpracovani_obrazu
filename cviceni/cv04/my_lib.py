@@ -21,7 +21,7 @@ def intenzity_corecton(img, etalon) -> np.ndarray:
     """
     return img/etalon
 
-def plot_imgs(imgs, titles, rows : int = 1, cmap=None):
+def plot_imgs(imgs, titles, rows : int = 1, cmaps=None):
     """ Plot images
     get:
         imgs - list of images
@@ -31,13 +31,13 @@ def plot_imgs(imgs, titles, rows : int = 1, cmap=None):
     """
     n = len(imgs)
     cols = int(np.ceil(n/rows))
-    if cmap != None:
-        plt.set_cmap(cmap)
     for i in range(n):
         img = imgs[i]
         plt.subplot(rows, cols, i+1)
         plt.imshow(img) 
         plt.title(titles[i])
+        if cmaps != None and cmaps[i] != None:
+            plt.set_cmap(cmaps[i])
     plt.show()
     plt.waitforbuttonpress()
 
