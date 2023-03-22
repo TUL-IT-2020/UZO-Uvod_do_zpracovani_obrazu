@@ -15,12 +15,13 @@ DEBUG = True
 
 def calculate_shape(image, angle : float = 0) -> tuple():
     rows, cols, _ = image.shape
-    #for coord in [(0, 0), (0, cols), (rows, 0), (rows, cols)]:
-    #return (int(x_max), int(y_max))
-    coord = (rows, cols)
-    x, y = transform_coords(coord, generate_rotation_matrix((0, 0), angle))
-    dim = int(max(abs(y), abs(x)))
-    return (dim, dim)
+    # calculate diag
+    diag = np.sqrt(rows**2 + cols**2)
+    # calculate angle
+    if angle == 90 or angle == 180 or angle == 270 or angle == 360:
+        return (rows, cols)
+    else:
+        return(int(diag), int(diag))
 
 def calculate_translation(image, angle : float = 0) -> tuple():
     image_new_shape = calculate_shape(image, angle)
@@ -33,25 +34,6 @@ def center_image(old_image_shape, new_image_shape) -> tuple():
     x = (new_image_shape[0] - old_image_shape[0])
     y = new_image_shape[1] - old_image_shape[1]
     return (int(x//2), int(y//2)) 
-
-def project_image(image, M):
-    """ Project image
-    """
-    # Plot
-    plt.figure()
-    plt.subplot(1, 2, 1)
-    plt.imshow(image)
-    plt.title("Original")
-
-    plt.subplot(1, 2, 2)
-    # project
-    rows, cols, _ = image.shape
-    dst = np.zeros((rows, cols, 3), np.uint8)
-    dst = project_pixels(image, M, dst)
-    plt.imshow(dst)
-    plt.title("Projected")
-
-    plt.waitforbuttonpress()
 
 def rotate_image(image, degrees : float = 0):
     # Plot
@@ -91,31 +73,7 @@ def rotate_image(image, degrees : float = 0):
 
     plt.show()
     plt.waitforbuttonpress()
-    plt.close()    
-
-def rotate_image_cv2(image, angle : float = 0):
-    """ Rotate image
-    """
-    # Plot
-    plt.figure()
-    plt.subplot(1, 2, 1)
-    plt.imshow(image)
-    plt.title("Original")
-
-    plt.subplot(1, 2, 2)
-    # rotate
-    rows, cols, _ = image.shape
-    center = (cols/2, rows/2)
-    M = cv2.getRotationMatrix2D(center, angle, 1)
-    print("Rows:", rows, "cols:", cols)
-    print(M)
-    dst = cv2.warpAffine(image, M, (cols, rows))
-    plt.imshow(dst)
-    plt.title("Rotated")
-
-    plt.show()
-
-    plt.waitforbuttonpress()
+    plt.close()
 
 img_file = "cv03_robot.bmp"
 
