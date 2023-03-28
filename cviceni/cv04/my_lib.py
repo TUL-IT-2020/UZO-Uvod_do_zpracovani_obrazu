@@ -21,7 +21,7 @@ def intenzity_corecton(img, etalon) -> np.ndarray:
     """
     return img/etalon
 
-def plot_imgs(imgs, titles, rows : int = 1, cmaps=None):
+def plot_imgs(imgs, titles, rows : int = 1, cmaps=None, cbars=None):
     """ Plot images
     get:
         imgs - list of images
@@ -29,6 +29,7 @@ def plot_imgs(imgs, titles, rows : int = 1, cmaps=None):
         rows - number of rows
         cmap - color map
     """
+    plt.rcParams["figure.figsize"] = (10,2)
     n = len(imgs)
     cols = int(np.ceil(n/rows))
     for i in range(n):
@@ -38,8 +39,33 @@ def plot_imgs(imgs, titles, rows : int = 1, cmaps=None):
         plt.title(titles[i])
         if cmaps != None and cmaps[i] != None:
             plt.set_cmap(cmaps[i])
+        if cbars != None and cbars[i]:
+            plt.colorbar(fraction=0.046, pad=0.04)
     plt.show()
     plt.waitforbuttonpress()
+
+def fftshift(fft) -> np.ndarray:
+    # np.fft.fftshift
+    Y = fft.shape[0]
+    X = fft.shape[1]
+    ret = np.zeros([Y,X], dtype=complex)
+    for y in range(Y):
+        for x in range(X):
+            ret[y][x] = fft[y][x]
+    for y in range(Y):
+        for x in range(X):
+            ret[y][x] = fft[(y+Y//2)%Y][(x+X//2)%X]
+    return ret
+
+# amplitudové spektrum
+def amp_spec(fft) -> np.ndarray:
+    """ Calculate amplitude spectrum of image
+    get:
+        fft - image to calculate amplitude spectrum
+    return:
+        amp_spec - amplitude spectrum of image
+    """
+    return np.log(np.abs(fft))
 
 def histogram(img) -> np.ndarray:
     """ Calculate histogram of image

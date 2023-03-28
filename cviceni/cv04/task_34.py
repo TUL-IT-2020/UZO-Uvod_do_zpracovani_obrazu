@@ -22,47 +22,16 @@ filtHP1 = "cv04c_filtHP1.bmp"
 filtDP = "cv04c_filtDP.bmp"
 filtDP1 = "cv04c_filtDP1.bmp"
 
-def fftshift(fft) -> np.ndarray:
-    Y = fft.shape[0]
-    X = fft.shape[1]
-    ret = np.zeros([Y,X], dtype=complex)
-    for y in range(Y):
-        for x in range(X):
-            ret[y][x] = fft[y][x]
-    for y in range(Y):
-        for x in range(X):
-            ret[y][x] = fft[(y+Y//2)%Y][(x+X//2)%X]
-    return ret
-
-# amplitudové spektrum
-def amp_spec(fft) -> np.ndarray:
-    return np.log(np.abs(fft))
-
-def plot_imgs_colorbar(imgs, titles, rows : int = 1, cmap=None):
-    # set plt sizes
-    plt.rcParams["figure.figsize"] = (10,2)
-    n = len(imgs)
-    cols = int(np.ceil(n/rows))
-    if cmap != None:
-        plt.set_cmap(cmap)
-    for i in range(n):
-        img = imgs[i]
-        plt.subplot(rows, cols, i+1)
-        plt.imshow(img) 
-        plt.colorbar(fraction=0.046, pad=0.04)
-        plt.title(titles[i])
-    plt.show()
-    plt.waitforbuttonpress()
-
 def task03():
     robot_bgr = cv2.imread(robot)
     robot_rgb = cv2.cvtColor(robot_bgr, cv2.COLOR_BGR2RGB)
     gray_robot = cv2.cvtColor(robot_rgb, cv2.COLOR_RGB2GRAY)
     robot_fft = np.fft.fft2(gray_robot)
 
-    plot_imgs_colorbar(
+    plot_imgs(
         [robot_rgb, amp_spec(robot_fft), amp_spec(fftshift(robot_fft))],
-        ["Robot", "FFT", "FFTshift"]
+        ["Robot", "FFT", "FFTshift"],
+        cbars=[False, True, True]
     )
 
 def filter_img(img, filter_files):
