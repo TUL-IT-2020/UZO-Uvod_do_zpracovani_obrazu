@@ -11,10 +11,8 @@ spektrum a histogram.
 
 import sys
 import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-sys.path.append('../cv04')
-from my_lib import *
+sys.path.append('../')
+from cv04.my_lib import *
 
 robot = "cv05_robotS.bmp"
 PSS = "cv05_PSS.bmp"
