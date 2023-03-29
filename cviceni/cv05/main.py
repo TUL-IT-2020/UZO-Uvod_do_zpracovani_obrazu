@@ -18,51 +18,12 @@ from cv03.graphic import *
 robot = "cv05_robotS.bmp"
 PSS = "cv05_PSS.bmp"
 
-def task_a(img, kernel_size = 3):
-    img_bgr = cv2.imread(img)
-    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-    img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2GRAY)
-
-    # get spectrum
-    spectrum = np.fft.fftshift(np.fft.fft2(img_gray))
-
-    # apply filters
+def mean_filter(img, kernel_size = 3):
     kernel = np.ones((kernel_size, kernel_size)) / kernel_size**2
-    img_filtered = convolution(img_gray, kernel)
-    spectrum_filtered = np.fft.fftshift(np.fft.fft2(img_filtered))
-
-    # plot
-    plot_imgs(
-        [img_rgb, amp_spec(spectrum), img_filtered, amp_spec(spectrum_filtered)],
-        ["Robot", "FFT", "Filtered", "Filtered FFT"],
-        2,
-        cmaps=['gray', 'turbo', 'gray', 'turbo'],
-        cbars=[False, True, False, True]
-    )
+    return convolution(img, kernel)
 
 def rotation_mask(img, kernel_size = 3):
     pass
-
-def task_b(img):
-    img_bgr = cv2.imread(img)
-    img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-    img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2GRAY)
-
-    # get spectrum
-    spectrum = np.fft.fftshift(np.fft.fft2(img_gray))
-
-    # apply filters
-    img_filtered = rotation_mask(img_gray)
-    spectrum_filtered = np.fft.fftshift(np.fft.fft2(img_filtered))
-
-    # plot
-    plot_imgs(
-        [img_rgb, amp_spec(spectrum), img_filtered, amp_spec(spectrum_filtered)],
-        ["Robot", "FFT", "Filtered", "Filtered FFT"],
-        2,
-        cmaps=['gray', 'turbo', 'gray', 'turbo'],
-        cbars=[False, True, False, True]
-    )
 
 def median(img, kernel_size = 3):
     """ Implements 2D median filter """
@@ -78,7 +39,7 @@ def median(img, kernel_size = 3):
 
     return new_img
 
-def task_c(img, kernel_size = 3):
+def run_and_plot_task(img, algorithm, kernel_size = 3):
     img_bgr = cv2.imread(img)
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2GRAY)
@@ -87,13 +48,13 @@ def task_c(img, kernel_size = 3):
     spectrum = np.fft.fftshift(np.fft.fft2(img_gray))
 
     # apply filters
-    img_filtered = median(img_gray, kernel_size)
+    img_filtered = algorithm(img_gray, kernel_size)
     spectrum_filtered = np.fft.fftshift(np.fft.fft2(img_filtered))
 
     # plot
     plot_imgs(
         [img_rgb, amp_spec(spectrum), img_filtered, amp_spec(spectrum_filtered)],
-        ["Robot", "FFT", "Filtered", "Filtered FFT"],
+        ["Original", "FFT", "Filtered", "Filtered FFT"],
         2,
         cmaps=['gray', 'turbo', 'gray', 'turbo'],
         cbars=[False, True, False, True]
@@ -105,8 +66,12 @@ if __name__ == '__main__':
     plt.close('all')
 
     # task a
-    task_a(robot)
-    task_b(robot)
-    task_c(robot)
-    #task_a(PSS)
+    run_and_plot_task(robot, mean_filter)
+    run_and_plot_task(PSS, mean_filter)
+    # task b
+    run_and_plot_task(robot, rotation_mask)
+    run_and_plot_task(PSS, rotation_mask)
+    # task c
+    run_and_plot_task(robot, median)
+    run_and_plot_task(PSS, median)
     
