@@ -1,5 +1,6 @@
 # By Pytel
 
+import cv2
 import numpy as np
 
 def generate_rotation_matrix(center : tuple() = (0,0), angle: float = 0) -> np.array:
@@ -43,6 +44,20 @@ def valid_point(coord : tuple(), shape : tuple()) -> bool:
     if x < 0 or x >= X or y < 0 or y >= Y:
         return False
     return True
+
+def convolution(img, kernel):
+    """ Implements 2D convolution """
+    X_img, Y_img = img.shape
+    X_ker, Y_ker = kernel.shape
+    
+    img = cv2.copyMakeBorder(img, X_ker-1, X_ker-1, Y_ker-1, Y_ker-1, cv2.BORDER_CONSTANT, value=128)
+    
+    new_img = np.zeros((X_img, Y_img))
+    for x in range(X_ker-1, X_img + X_ker-1):
+        for y in range(Y_ker-1, Y_img + Y_ker-1):
+            new_img[x-X_ker+1, y-Y_ker+1] = np.sum(np.multiply(img[x-X_ker+1:x+1, y-Y_ker+1:y+1], kernel))
+
+    return new_img
 
 def project_pixels(source, M, destination) -> np.array:
     """ Project pixels
