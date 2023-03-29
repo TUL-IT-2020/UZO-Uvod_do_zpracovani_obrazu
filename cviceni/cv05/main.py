@@ -23,7 +23,9 @@ def mean_filter(img, kernel_size = 3):
     return convolution(img, kernel)
 
 def rotation_mask(img, kernel_size = 3):
-    pass
+    """ Implements 2D rotation mask filter """
+    # TODO: implement rotation mask !!!
+    return img
 
 def median(img, kernel_size = 3):
     """ Implements 2D median filter """
@@ -35,6 +37,13 @@ def median(img, kernel_size = 3):
     new_img = np.zeros((X_img, Y_img))
     for x in range(X_ker-1, X_img + X_ker-1):
         for y in range(Y_ker-1, Y_img + Y_ker-1):
+            """
+            # take cros from image
+            y_axis = img[x, y-Y_ker+1:y+1]
+            x_axis = img[x-X_ker+1:x+1, y]
+            # get median
+            new_img[x-X_ker+1, y-Y_ker+1] = np.median(np.concatenate((y_axis, x_axis)))
+            """
             new_img[x-X_ker+1, y-Y_ker+1] = np.median(img[x-X_ker+1:x+1, y-Y_ker+1:y+1])
 
     return new_img
