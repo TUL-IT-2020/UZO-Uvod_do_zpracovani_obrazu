@@ -29,31 +29,37 @@ def rotation_mask(img, kernel_size = 3):
     new_img = np.zeros((X_img, Y_img))
 
     def get_mask_orientations():
+        """ Returns list of masks for convolution
+        """
         masks = [
-            np.array([[1, 1, 1], [0, 1, 0], [0, 0, 0]]),
-            np.array([[0, 1, 1], [0, 1, 1], [0, 0, 0]]),
-            np.array([[0, 0, 1], [0, 1, 1], [0, 0, 1]]),
-            np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]]),
-            np.array([[0, 0, 0], [0, 1, 0], [1, 1, 1]]),
-            np.array([[0, 0, 0], [1, 1, 0], [1, 1, 0]]),
-            np.array([[1, 0, 0], [1, 1, 0], [1, 0, 0]]),
-            np.array([[1, 1, 0], [1, 1, 0], [0, 0, 0]])
+            np.array([[1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]),
+            np.array([[0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]),
+            np.array([[0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]),
+            np.array([[0, 0, 0, 0, 0], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 0, 0, 0]]),
+            np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1]]),
+            np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0]]),
+            np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0]]),
+            np.array([[0, 0, 0, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [0, 0, 0, 0, 0]])
         ]
         return masks
 
     masks = get_mask_orientations()
+    for mask in masks:
+        mask = mask / np.sum(mask)
+        print(mask)
+        print()
 
     for x in range(X_img):
         for y in range(Y_img):
             variances = []
             for mask in masks:
-                region = img_padded[x:x+kernel_size, y:y+kernel_size]
-                masked_region = region * mask
+                region = img_padded[x:x+kernel_size+2, y:y+kernel_size+2]
+                masked_region = region * (mask / np.sum(mask))
                 variances.append(np.var(masked_region))
             
             best_mask_idx = np.argmin(variances)
             best_mask = masks[best_mask_idx]
-            new_img[x, y] = np.mean(img_padded[x:x+kernel_size, y:y+kernel_size] * best_mask)
+            new_img[x, y] = np.mean(img_padded[x:x+kernel_size+2, y:y+kernel_size+2] * (best_mask / np.sum(best_mask)))
     return new_img
 
 def median(img, kernel_size = 3):
