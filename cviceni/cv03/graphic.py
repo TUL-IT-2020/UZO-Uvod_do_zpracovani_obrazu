@@ -5,6 +5,7 @@ import numpy as np
 def generate_rotation_matrix(center : tuple() = (0,0), angle: float = 0) -> np.array:
     """ Generate rotation matrix
     """
+    #cv2.getRotationMatrix2D(center, angle, scale)
     angle = np.deg2rad(angle)
     cos = np.cos(angle)
     sin = np.sin(angle)
@@ -66,6 +67,7 @@ def project_pixels(source, M, destination) -> np.array:
 def warpAffine(image, M, dsize):
     """ Warp affine
     """
+    #cv2.warpAffine(image, M, dsize)
     rows, cols = dsize
     dst = np.zeros((rows, cols, 3), np.uint8)
     dst = project_pixels(image, M, dst)

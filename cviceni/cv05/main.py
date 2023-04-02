@@ -13,6 +13,7 @@ import sys
 import cv2
 sys.path.append('../')
 from cv04.my_lib import *
+from cv03.graphic import *
 
 robot = "cv05_robotS.bmp"
 PSS = "cv05_PSS.bmp"
