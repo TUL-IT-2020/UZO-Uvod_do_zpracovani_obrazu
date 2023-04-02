@@ -1,4 +1,4 @@
-# By Pytel
+# By Pytel, mothspaws
 """
 Z obrázků cv05_robotS.bmp a cv05_PSS.bmp odstraňte šum:  
 a) pomocí metody prostého průměrování 
@@ -24,8 +24,37 @@ def mean_filter(img, kernel_size = 3):
 
 def rotation_mask(img, kernel_size = 3):
     """ Implements 2D rotation mask filter """
-    # TODO: implement rotation mask !!!
-    return img
+    X_img, Y_img = img.shape
+    img_padded = cv2.copyMakeBorder(img, kernel_size-1, kernel_size-1, kernel_size-1, kernel_size-1, cv2.BORDER_CONSTANT, value=128)
+    new_img = np.zeros((X_img, Y_img))
+
+    def get_mask_orientations():
+        masks = [
+            np.array([[1, 1, 1], [0, 1, 0], [0, 0, 0]]),
+            np.array([[0, 1, 1], [0, 1, 1], [0, 0, 0]]),
+            np.array([[0, 0, 1], [0, 1, 1], [0, 0, 1]]),
+            np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]]),
+            np.array([[0, 0, 0], [0, 1, 0], [1, 1, 1]]),
+            np.array([[0, 0, 0], [1, 1, 0], [1, 1, 0]]),
+            np.array([[1, 0, 0], [1, 1, 0], [1, 0, 0]]),
+            np.array([[1, 1, 0], [1, 1, 0], [0, 0, 0]])
+        ]
+        return masks
+
+    masks = get_mask_orientations()
+
+    for x in range(X_img):
+        for y in range(Y_img):
+            variances = []
+            for mask in masks:
+                region = img_padded[x:x+kernel_size, y:y+kernel_size]
+                masked_region = region * mask
+                variances.append(np.var(masked_region))
+            
+            best_mask_idx = np.argmin(variances)
+            best_mask = masks[best_mask_idx]
+            new_img[x, y] = np.mean(img_padded[x:x+kernel_size, y:y+kernel_size] * best_mask)
+    return new_img
 
 def median(img, kernel_size = 3):
     """ Implements 2D median filter """
@@ -75,12 +104,12 @@ if __name__ == '__main__':
     plt.close('all')
 
     # task a
-    run_and_plot_task(robot, mean_filter)
-    run_and_plot_task(PSS, mean_filter)
+    # run_and_plot_task(robot, mean_filter)
+    # run_and_plot_task(PSS, mean_filter)
     # task b
     run_and_plot_task(robot, rotation_mask)
-    run_and_plot_task(PSS, rotation_mask)
+    # run_and_plot_task(PSS, rotation_mask)
     # task c
-    run_and_plot_task(robot, median)
-    run_and_plot_task(PSS, median)
+    # run_and_plot_task(robot, median)
+    # run_and_plot_task(PSS, median)
     
