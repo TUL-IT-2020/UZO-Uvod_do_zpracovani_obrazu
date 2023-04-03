@@ -22,45 +22,36 @@ def mean_filter(img, kernel_size = 3):
     kernel = np.ones((kernel_size, kernel_size)) / kernel_size**2
     return convolution(img, kernel)
 
-def rotation_mask(img, kernel_size = 3):
-    """ Implements 2D rotation mask filter """
-    X_img, Y_img = img.shape
-    img_padded = cv2.copyMakeBorder(img, kernel_size-1, kernel_size-1, kernel_size-1, kernel_size-1, cv2.BORDER_CONSTANT, value=128)
-    new_img = np.zeros((X_img, Y_img))
-
-    def get_mask_orientations():
-        """ Returns list of masks for convolution
-        """
-        masks = [
-            np.array([[1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]),
-            np.array([[0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]),
-            np.array([[0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]),
-            np.array([[0, 0, 0, 0, 0], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 0, 0, 0]]),
-            np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1], [0, 0, 1, 1, 1]]),
-            np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0]]),
-            np.array([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0]]),
-            np.array([[0, 0, 0, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [1, 1, 1, 0, 0], [0, 0, 0, 0, 0]])
-        ]
-        return masks
-
-    masks = get_mask_orientations()
-    for mask in masks:
-        mask = mask / np.sum(mask)
-        print(mask)
-        print()
-
-    for x in range(X_img):
-        for y in range(Y_img):
-            variances = []
-            for mask in masks:
-                region = img_padded[x:x+kernel_size+2, y:y+kernel_size+2]
-                masked_region = region * (mask / np.sum(mask))
-                variances.append(np.var(masked_region))
+def rotation_mask(image, kernel_size=3):
+    output_image = np.zeros(image.shape)
+    h0,h1 = (kernel_size-1)//2, (kernel_size-1)//2 
+    new_image = np.pad(image,((h0,h0),(h1,h1)),'constant',constant_values=(0,0))
+    variancies = np.zeros(new_image.shape)
+    means = np.zeros(new_image.shape)
+    for y, row in enumerate(new_image):
+        if(y == 0 or y == new_image.shape[0]):
+            continue
+        for x, pixel in enumerate(row):
+            if (x == 0 or x == new_image.shape[1]):
+                continue
+            window = new_image[y-1:y+2, x-1:x+2]
+            variancies[y, x] = np.var(window)
+            means[y, x] = np.mean(window)
+    
             
-            best_mask_idx = np.argmin(variances)
-            best_mask = masks[best_mask_idx]
-            new_img[x, y] = np.mean(img_padded[x:x+kernel_size+2, y:y+kernel_size+2] * (best_mask / np.sum(best_mask)))
-    return new_img
+    for y, row in enumerate(image):
+        if(y == 0 or y == image.shape[0]):
+            continue
+        for x, pixel in enumerate(row):
+            if (x == 0 or x == image.shape[1]):
+                continue
+            window = variancies[y-1:y+2, x-1:x+2]
+            window_mean = means[y-1:y+2, x-1:x+2]
+            window[1,1] = float('inf')
+            tmp = np.unravel_index(window.argmin(), window.shape)
+            tmp_min = window_mean[tmp]
+            output_image[y,x] = tmp_min
+    return output_image
 
 def median(img, kernel_size = 3):
     """ Implements 2D median filter """
