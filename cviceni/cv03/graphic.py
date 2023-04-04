@@ -47,7 +47,15 @@ def valid_point(coord : tuple(), shape : tuple()) -> bool:
     return True
 
 def convolution(img, kernel):
-    """ Implements 2D convolution """
+    """ Implements 2D convolution 
+
+    Args:
+        img : image to convolute
+        kernel : kernel to convolute
+
+    Returns:
+        new_img : convoluted image
+    """
     X_img, Y_img = img.shape
     X_ker, Y_ker = kernel.shape
     
@@ -62,12 +70,14 @@ def convolution(img, kernel):
 
 def project_pixels(source, M, destination) -> np.array:
     """ Project pixels
-    get:
-        source - source image
-        M - inverse transformation matrix
-        destination - blank destination image
-    return:
-        destination - transformed image
+    
+    Args:
+        source : source image
+        M : inverse transformation matrix
+        destination : blank destination image
+    
+    Returns:
+        destination : transformed image
     """
     X, Y, _ = destination.shape
     for x in range(X):

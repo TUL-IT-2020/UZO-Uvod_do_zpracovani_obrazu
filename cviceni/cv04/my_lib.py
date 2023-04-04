@@ -13,23 +13,29 @@ def clear():
 
 def intenzity_corecton(img, etalon) -> np.ndarray:
     """ Corect image intenzity
-    get:
-        img - image to corect
-        etalon - etalon image
-    return:
-        img - corected image
+    
+    Args:
+        img : image to corect
+        etalon : etalon image
+        
+    Returns:
+        img : corected image
     """
     return img/etalon
 
-def plot_imgs(imgs, titles, rows : int = 1, cmaps=None, cbars=None):
+def plot_imgs(imgs, titles, rows : int = 1, cmaps=None, cbars=None, figsize=(8,6), window_name="Graph"):
     """ Plot images
-    get:
-        imgs - list of images
-        titles - list of titles
-        rows - number of rows
-        cmap - color map
+    
+    Args:
+        imgs : list of images
+        titles : list of titles
+        rows : number of rows
+        cmap : color map
+        figsize : size of figure
+        window_name : name of window
     """
-    plt.rcParams["figure.figsize"] = (10,2)
+    plt.figure(window_name, figsize=figsize)
+    #plt.rcParams["figure.figsize"] = figsize
     n = len(imgs)
     cols = int(np.ceil(n/rows))
     for i in range(n):
@@ -60,19 +66,23 @@ def fftshift(fft) -> np.ndarray:
 # amplitudové spektrum
 def amp_spec(fft) -> np.ndarray:
     """ Calculate amplitude spectrum of image
-    get:
-        fft - image to calculate amplitude spectrum
-    return:
-        amp_spec - amplitude spectrum of image
+    
+    Args:
+        fft : image to calculate amplitude spectrum
+        
+    Returns:
+        amp_spec : amplitude spectrum of image
     """
     return np.log(np.abs(fft))
 
 def histogram(img) -> np.ndarray:
     """ Calculate histogram of image
-    get:
-        img - image to calculate histogram
-    return:
-        hist - histogram of image
+    
+    Args:
+        img : image to calculate histogram
+        
+    Returns:
+        hist : histogram of image
     """
     Y = img.shape[0]
     X = img.shape[1]
@@ -96,13 +106,15 @@ def sumed(array) -> np.ndarray:
 # TODO: use P0
 def ekvalise(img, q0 = 0, p0 = 0, qk = 255) -> np.ndarray:
     """ Ekvalise image
-    get:
-        img - image to ekvalise
-        q0 - start value
-        p0 - start value
-        qk - end value
-    return:
-        ekvalised - ekvalised image
+    
+    Args:
+        img : image to ekvalise
+        q0 : start value
+        p0 : start value
+        qk : end value
+    
+    Returns:
+        ekvalised : ekvalised image
     """
     Y = img.shape[0]
     X = img.shape[1]
