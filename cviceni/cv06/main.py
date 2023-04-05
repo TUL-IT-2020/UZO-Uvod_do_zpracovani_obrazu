@@ -9,99 +9,15 @@ pro každý z hranových detektorů.
 
 import sys
 import cv2
+import matplotlib.pyplot as plt
 sys.path.append('../')
-from cv04.my_lib import *
-from cv03.graphic import *
-from my_colors import *
-
-
-def laplace(img):
-    kernel = np.array([
-        [0, 1, 0],
-        [1, -4, 1],
-        [0, 1, 0]])
-    kernel = np.array([
-        [1, 1, 1],
-        [1, -8, 1],
-        [1, 1, 1]])
-
-    return convolution(img, kernel)
-
-def sobel(img):
-    kernels = []
-    kernels.append(np.array([
-        [1, 2, 1],
-        [0, 0, 0],
-        [-1, -2, -1]]))
-    kernels.append(np.array([
-        [0, 1, 2],
-        [-1, 0, 1],
-        [-2, -1, 0]]))
-    kernels.append(np.array([
-        [-1, 0, 1],
-        [-2, 0, 2],
-        [-1, 0, 1]]))
-    kernels.append(np.array([
-        [-2, -1, 0],
-        [-1, 0, 1],
-        [0, 1, 2]]))
-    kernels.append(np.array([
-        [-1, -2, -1],
-        [0, 0, 0],
-        [1, 2, 1]]))
-    kernels.append(np.array([
-        [0, -1, -2],
-        [1, 0, -1],
-        [2, 1, 0]]))
-    kernels.append(np.array([
-        [1, 0, -1],
-        [2, 0, -2],
-        [1, 0, -1]]))
-    edges = []
-    for kernel in kernels:
-        edges.append(convolution(img, kernel))
-    edges_np = np.array(edges)
-    return np.max(edges_np, axis=0)
-
-def kirsch(img):
-    kernels = []
-    kernels.append(np.array([
-        [-5, -5, -5],
-        [3, 0, 3],
-        [3, 3, 3]]))
-    kernels.append(np.array([
-        [-5, -5, 3],
-        [-5, 0, 3],
-        [3, 3, 3]]))
-    kernels.append(np.array([
-        [-5, 3, 3],
-        [-5, 0, 3],
-        [-5, 3, 3]]))
-    kernels.append(np.array([
-        [3, 3, 3],
-        [-5, 0, 3],
-        [-5, -5, 3]]))
-    kernels.append(np.array([
-        [3, 3, 3],
-        [3, 0, 3],
-        [-5, -5, -5]]))
-    kernels.append(np.array([
-        [3, 3, 3],
-        [3, 0, -5],
-        [3, -5, -5]]))
-    kernels.append(np.array([
-        [3, 3, -5],
-        [3, 0, -5],
-        [3, 3, -5]]))
-    kernels.append(np.array([
-        [3, -5, -5],
-        [3, 0, -5],
-        [3, 3, 3]]))
-    edges = []
-    for kernel in kernels:
-        edges.append(convolution(img, kernel))
-    edges_np = np.array(edges)
-    return np.max(edges_np, axis=0)
+sys.path.append('../my_libs/')
+sys.path.append('../my_libs/img/')
+from my_libs.fft import *
+from my_libs.tools import *
+from my_libs.colors import *
+from my_libs.img.filters import *
+from my_libs.img.processing import *
 
 def run_and_plot_task(img, algorithm, task_name="Task"):
     # test if file exists
