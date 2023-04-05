@@ -5,9 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import functional as func
 
-
+# TODO:
 class IMG(np.ndarray):
-    
+    # TODO:
     def __init__(self, img : np.ndarray):
         super().__init__(img)
 
@@ -23,7 +23,10 @@ class IMG(np.ndarray):
         return func.convolution(self._img, kernel)
 
 
-def plot_imgs(imgs, titles, rows : int = 1, cmaps=None, cbars=None, figsize=(8,6), window_name="Graph"):
+def plot_imgs(
+        imgs, titles, rows : int = 1, cmaps=None, 
+        cbars=None, figsize=(8,6), window_name="Graph"
+    ):
     """ Plot images
     
     Args:
@@ -50,6 +53,7 @@ def plot_imgs(imgs, titles, rows : int = 1, cmaps=None, cbars=None, figsize=(8,6
     plt.show()
     plt.waitforbuttonpress()
 
+# TODO:
 if __name__ == "__main__":
     img_path = "test_img.bmp"
     cv2_img = cv2.imread(img_path)

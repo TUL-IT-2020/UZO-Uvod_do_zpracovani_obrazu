@@ -27,91 +27,13 @@ import cv2
 sys.path.append('../')
 sys.path.append('../my_libs/')
 sys.path.append('../my_libs/img/')
+from my_libs.fft import *
 from my_libs.tools import *
 from my_libs.colors import *
-from my_libs.fft import *
 from my_libs.img.processing import *
+from my_libs.img.functional import *
 
-mince = "cv07_segmentace.bmp"
-barveni = "cv07_barveni.bmp"
 
-def img_to_g(img):
-    #emps = float(1e-10)
-    R = img[:,:,0].astype(float)
-    G = img[:,:,1].astype(float)
-    B = img[:,:,2].astype(float)
-    g = (G*255)/(R+G+B)# + emps)
-    return g
-
-def normalize(img):
-    img_min = np.min(img)
-    img_max = np.max(img)
-    img = img - img_min
-    img = img / (img_max - img_min)
-    img = img * 255
-    img = img.astype(np.uint8)
-    return img
-
-def segmentate(img, threshold = 100):
-    """ Segmentate image by threshold.
-
-    Args:
-        img: image to segmentate
-        threshold: threshold value
-
-    Return:
-        img: image with 0 and 255
-    """
-    img = img > threshold
-    img = img.astype(np.uint8)
-    img = img * 255
-    return img
-
-def flood_fill(img, x, y, object_number):
-    """ Flood fill algorithm.
-
-    Args:
-        img: image to fill
-        x: x coordinate of start point
-        y: y coordinate of start point
-        object_number: number of object
-
-    Return:
-        img: image with object filled
-    """
-    X, Y = img.shape
-    if img[y][x] == 255:
-        img[y][x] = object_number
-        if x > 0:
-            img = flood_fill(img, x-1, y, object_number)
-        if x < X-1:
-            img = flood_fill(img, x+1, y, object_number)
-        if y > 0:
-            img = flood_fill(img, x, y-1, object_number)
-        if y < Y-1:
-            img = flood_fill(img, x, y+1, object_number)
-    return img
-
-def collor_objects(img):
-    """ Collor objects in image by separate numbers.
-    Maximal number of objects is 255.
-    Background value is 0.
-
-    Args:
-        img: image to collor objects
-
-    Return:
-        img: image with objects collored by numbers
-    """
-    X, Y = img.shape
-    objects = np.zeros([Y, X], dtype=np.uint8)
-    object_number = 1
-    for x in range(X):
-        for y in range(Y):
-            if img[y][x] == 255:
-                objects[y][x] = 0
-
-    return objects
 
 def calculate_centers_of_objects(img, object_numbers = [1]) -> dict:
     """ Calculate centers of objects in image.
@@ -144,6 +66,8 @@ def calculate_centers_of_objects(img, object_numbers = [1]) -> dict:
 
     return centers
 
+mince = "cv07_segmentace.bmp"
+barveni = "cv07_barveni.bmp"
 
 if __name__ == "__main__":
     plt.ion()
@@ -174,7 +98,25 @@ if __name__ == "__main__":
     plt.figure("Histogram")
     plt.hist(g.ravel(), bins=256, range=(0, 256))
     plt.waitforbuttonpress()
+    # TODO: spociat hodnotu T !!!
+    T = 100
 
+    # Segmentate image:
+    g = segmentate(g, T, 255)
+    plt.figure("Segmentated image")
+    plt.imshow(g, cmap='gray')
+    plt.waitforbuttonpress()
+
+    # Colored objects:
+    colored, number = color_objects(g)
+    plt.figure("Colored objects")
+    plt.imshow(colored, cmap='jet')
+    plt.waitforbuttonpress()
+
+    # Calculate centers:
+    centers = calculate_centers_of_objects(colored, range(1, number+1))
+
+    # Detect objects:
 
     # Nalezené objekty:
     #print("Na souřadnici těžiště", 10,23, "se nachází:", 5)

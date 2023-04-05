@@ -3,17 +3,106 @@
 import cv2
 import numpy as np
 
-def intenzity_corecton(img, etalon) -> np.ndarray:
-    """ Corect image intenzity
-    
+
+def img_to_g(img) -> np.ndarray:
+    """ Convert image to g.
+
     Args:
-        img : image to corect
-        etalon : etalon image
-        
-    Returns:
-        img : corected image
+        img: image to convert
+
+    Return:
+        g: g image
+    
+    #### Algorithm:
+    g = (G*255)/(R+G+B)
     """
-    return img/etalon
+    #emps = float(1e-10)
+    R = img[:,:,0].astype(float)
+    G = img[:,:,1].astype(float)
+    B = img[:,:,2].astype(float)
+    g = (G*255)/(R+G+B)# + emps)
+    return g
+
+def segmentate(
+        img, 
+        threshold : np.uint8 = 100, 
+        scale : np.uint8 = 255
+    ) -> np.ndarray:
+    """ Segmentate image by threshold.
+
+    Args:
+        img: image to segmentate
+        threshold: threshold value
+        scale: scale of weigths (0-1)*scale
+
+    Return:
+        img: image with 0 and 255
+    """
+    # img : 0-1
+    img_segmented = img > threshold
+    # img : 0-255 <= (0-1)*scale
+    img_segmented = img_segmented * scale
+    return img_segmented.astype(np.uint8)
+
+
+def flood_fill(img, img_filled, x, y, object_number):
+    """ Flood fill algorithm.
+
+    Args:
+        img: image to fill
+        img_filled: image with filled points 
+        x: x coordinate of start point
+        y: y coordinate of start point
+        object_number: number of object
+
+    Return:
+        True if point is filled, False if not
+    """
+
+    # TODO: remove recursion !!!
+    
+    X, Y = img.shape
+    # 1) check if point is in image
+    if x < 0 or x >= X or y < 0 or y >= Y:
+        return False
+    # 2) check if point is not filled
+    if img_filled[x][y] != 0:
+        return False
+    # 3) check if point is not background
+    if img[x][y] == 255:
+        return False
+    # 4) fill point and call flood_fill for neighbours
+    img_filled[x][y] = object_number
+    for vector in [(0,1), (0,-1), (1,0), (-1,0)]:
+        dx, dy = vector
+        flood_fill(img, img_filled, x+dx, y+dy, object_number)
+    return True
+
+def color_objects(img):
+    """ Collor objects in image by separate numbers.
+
+    Args:
+        img: image to collor objects
+
+    Return:
+        img: image with collored objects
+
+    #### Algorithm
+    Maximal number of objects is 255.
+    Img background value is 255.
+    Collor background number is 0.
+    """
+    X, Y = img.shape
+    objects = np.zeros([X, Y], dtype=np.uint8)
+    object_number = 1
+    for x in range(X):
+        for y in range(Y):
+            if img[x][y] == 255:
+                continue
+            elif flood_fill(img, objects, x, y, object_number):
+                object_number += 1
+
+    return objects, object_number
 
 
 def histogram(img) -> np.ndarray:
@@ -54,6 +143,38 @@ def convolution(img, kernel):
             new_img[x-X_ker+1, y-Y_ker+1] = np.sum(np.multiply(img[x-X_ker+1:x+1, y-Y_ker+1:y+1], kernel))
 
     return new_img
+
+def intenzity_corecton(img, etalon) -> np.ndarray:
+    """ Corect image intenzity
+    
+    Args:
+        img : image to corect
+        etalon : etalon image
+        
+    Returns:
+        img : corected image
+    """
+    return img/etalon
+
+def normalize(img) -> np.ndarray:
+    """ Normalize image to 0-255.
+
+    Args:
+        img: image to normalize
+    
+    Return:
+        img: normalized image
+
+    #### Algorithm:
+    img = (img - min(img)) / (max(img) - min(img)) * 255
+    """
+    img_min = np.min(img)
+    img_max = np.max(img)
+    img = img - img_min
+    img = img / (img_max - img_min)
+    img = img * 255
+    img = img.astype(np.uint8)
+    return img
 
 # TODO: use P0
 def ekvalise(img, q0 = 0, p0 = 0, qk = 255) -> np.ndarray:
