@@ -12,11 +12,35 @@ def mean(img, kernel_size : int = 3) -> np.ndarray:
         kernel_size : size of kernel
     Returns:
         new_img : convoluted image
+    
+    #### Usecases:
+    - noise reduction
+    - low pass filter
+
+    #### Algorithm:
+    The mean filter is a simple linear filter that replaces each pixel with the mean of its neighbors.
     """
     kernel = np.ones((kernel_size, kernel_size)) / kernel_size**2
     return convolution(img, kernel)
 
 def rotation_mask(image, kernel_size : int = 3):
+    """ Implements 2D rotation mask filter
+
+    Args:
+        img : image to convolute
+        kernel_size : size of kernel
+    Returns:
+        new_img : convoluted image
+
+    #### Usecases:
+    - noise reduction
+    - low pass filter
+
+    #### Algorithm:
+    The rotation mask filter has 1 kernel and 8 different positions.
+    Mask is moving around each pixel and searching for the position with the lowest variance.
+    Output image is the mean of the pixel in the lowest variance position.
+    """
     output_image = np.zeros(image.shape)
     h0,h1 = (kernel_size-1)//2, (kernel_size-1)//2 
     new_image = np.pad(image,((h0,h0),(h1,h1)),'constant',constant_values=(0,0))
@@ -48,7 +72,12 @@ def rotation_mask(image, kernel_size : int = 3):
     return output_image
 
 def median(img, kernel_size : int = 3) -> np.ndarray:
-    """ Implements 2D median filter """
+    """ Implements 2D median filter 
+    
+    #### Usecases:
+    - noise reduction
+    - low pass filter
+    """
     X_img, Y_img = img.shape
     X_ker, Y_ker = kernel_size, kernel_size
     
@@ -69,6 +98,34 @@ def median(img, kernel_size : int = 3) -> np.ndarray:
     return new_img
 
 def laplace(img) -> np.ndarray:
+    """ Implements 2D laplace filter
+    
+    Args:
+        img : image to convolute
+    Returns:
+        new_img : convoluted image
+
+    #### Usecases:
+    - edge detection
+    - high pass filter
+
+    #### Algorithm:
+    The laplace filter is a simple linear filter that replaces each pixel with the laplace of its neighbors.
+    
+    Mask:
+    | | | |
+    | --- | --- | --- |
+    | 0 | 1 | 0 |
+    | 1 | -4| 1 |
+    | 0 | 1 | 0 |
+
+    Mask:
+    | | | |
+    | --- | --- | --- |
+    | 1 | 1 | 1 |
+    | 1 | -8| 1 |
+    | 1 | 1 | 1 |
+    """
     kernel = np.array([
         [0, 1, 0],
         [1, -4, 1],
