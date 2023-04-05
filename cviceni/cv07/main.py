@@ -27,12 +27,10 @@ import cv2
 sys.path.append('../')
 sys.path.append('../my_libs/')
 sys.path.append('../my_libs/img/')
-from my_libs.fft import *
 from my_libs.tools import *
 from my_libs.colors import *
 from my_libs.img.processing import *
 from my_libs.img.functional import *
-
 
 
 def calculate_centers_of_objects(img, object_numbers = [1]) -> dict:
@@ -116,12 +114,29 @@ if __name__ == "__main__":
     # Calculate centers:
     centers = calculate_centers_of_objects(colored, range(1, number+1))
 
-    # Detect objects:
+    # Draw centers:
 
-    # Nalezené objekty:
-    #print("Na souřadnici těžiště", 10,23, "se nachází:", 5)
-    # Suma mincí:
-    #print("Suma hodnot mincí:", 5)
+
+    # Detect objects:
+    coins = []
+    coords = []
+    for key in centers:
+        print(key, centers[key])
+        # detect coins:
+        if centers[key][2] > 4000:
+            coins.append(5)
+        else:
+            coins.append(1)
+        # position:
+        coords.append((centers[key][0], centers[key][1]))
+    
+
+    # Print results:
+    for i in range(len(coins)):
+        print("Na souřadnici těžiště", coords[i], "se nachází:", coins[i])
+    
+    coins_value_sum = sum(coins)
+    print("Suma hodnot mincí:", coins_value_sum)
     
     print(Green + "Done." + NC)
     

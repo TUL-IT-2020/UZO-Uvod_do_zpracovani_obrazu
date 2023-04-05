@@ -21,7 +21,7 @@ def img_to_g(img) -> np.ndarray:
     G = img[:,:,1].astype(float)
     B = img[:,:,2].astype(float)
     g = (G*255)/(R+G+B)# + emps)
-    return g
+    return g.astype(np.uint8)
 
 def segmentate(
         img, 
@@ -45,7 +45,7 @@ def segmentate(
     return img_segmented.astype(np.uint8)
 
 
-def flood_fill(img, img_filled, x, y, object_number):
+def flood_fill(img, img_filled, x, y, object_number) -> bool:
     """ Flood fill algorithm.
 
     Args:
@@ -60,7 +60,7 @@ def flood_fill(img, img_filled, x, y, object_number):
     """
 
     # TODO: remove recursion !!!
-    
+
     X, Y = img.shape
     # 1) check if point is in image
     if x < 0 or x >= X or y < 0 or y >= Y:
@@ -78,7 +78,7 @@ def flood_fill(img, img_filled, x, y, object_number):
         flood_fill(img, img_filled, x+dx, y+dy, object_number)
     return True
 
-def color_objects(img):
+def color_objects(img : np.ndarray) -> tuple(np.ndarray, int):
     """ Collor objects in image by separate numbers.
 
     Args:
@@ -86,6 +86,7 @@ def color_objects(img):
 
     Return:
         img: image with collored objects
+        object_number: number of objects
 
     #### Algorithm
     Maximal number of objects is 255.
@@ -104,7 +105,6 @@ def color_objects(img):
 
     return objects, object_number
 
-
 def histogram(img) -> np.ndarray:
     """ Calculate histogram of image
     
@@ -122,7 +122,7 @@ def histogram(img) -> np.ndarray:
             hist[img[y][x]] +=1
     return hist
 
-def convolution(img, kernel):
+def convolution(img, kernel : np.ndarray) -> np.ndarray:
     """ Implements 2D convolution 
 
     Args:
@@ -153,8 +153,11 @@ def intenzity_corecton(img, etalon) -> np.ndarray:
         
     Returns:
         img : corected image
+
+    #### Algorithm:
+    img = img / etalon
     """
-    return img/etalon
+    return (img/etalon).astype(np.uint8)
 
 def normalize(img) -> np.ndarray:
     """ Normalize image to 0-255.
@@ -170,11 +173,10 @@ def normalize(img) -> np.ndarray:
     """
     img_min = np.min(img)
     img_max = np.max(img)
-    img = img - img_min
-    img = img / (img_max - img_min)
-    img = img * 255
-    img = img.astype(np.uint8)
-    return img
+    img -= img_min
+    img /= (img_max - img_min)
+    img *= 255
+    return img.astype(np.uint8)
 
 # TODO: use P0
 def ekvalise(img, q0 = 0, p0 = 0, qk = 255) -> np.ndarray:
