@@ -37,6 +37,9 @@ def segmentate(
 
     Return:
         img: image with 0 and 255
+
+    #### Algorithm:
+    ![gif](https://cse19-iiith.vlabs.ac.in/exp/image-segmentation/images/image001.gif)
     """
     # img : 0-1
     img_segmented = img > threshold
@@ -45,7 +48,7 @@ def segmentate(
     return img_segmented.astype(np.uint8)
 
 
-def flood_fill(img, img_filled, x, y, object_number) -> bool:
+def flood_fill(img, img_filled, x : int, y : int, object_number) -> bool:
     """ Flood fill algorithm.
 
     Args:
@@ -57,6 +60,9 @@ def flood_fill(img, img_filled, x, y, object_number) -> bool:
 
     Return:
         True if point is filled, False if not
+
+    #### Algorithm:
+    ![gif](https://upload.wikimedia.org/wikipedia/commons/b/b6/Wfm_floodfill_animation_queue.gif)
     """
 
     # TODO: remove recursion !!!
@@ -131,6 +137,9 @@ def convolution(img, kernel : np.ndarray) -> np.ndarray:
 
     Returns:
         new_img : convoluted image
+
+    #### Algorithm:
+    ![gif](https://miro.medium.com/v2/resize:fit:1400/1*Fw-ehcNBR9byHtho-Rxbtw.gif)
     """
     X_img, Y_img = img.shape
     X_ker, Y_ker = kernel.shape
