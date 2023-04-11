@@ -1,4 +1,4 @@
-# By Pytel
+# By Pytel, mothspaws
 
 """
 1) Na základě analýzy obrazového histogramu segmentujte objekty (mince) 
@@ -103,8 +103,8 @@ if __name__ == "__main__":
     plt.figure("Histogram")
     plt.hist(g.ravel(), bins=256, range=(0, 256))
     plt.waitforbuttonpress()
-    # TODO: spociat hodnotu T !!!
-    T = 100
+    # TODO: calculate T 
+
 
     # Segmentate image:
     g = segmentate(g, T, 255)
@@ -123,7 +123,15 @@ if __name__ == "__main__":
 
     # Draw centers:
     # TODO: draw centers
+    img_centers = img.copy()
+    for key in centers:
+        center = (int(centers[key][0]), int(centers[key][1]))
+        cv2.circle(img_centers, center, 5, (255, 0, 0), -1)
 
+    plt.figure("Image with centers")
+    plt.imshow(img_centers)
+    plt.show(block=False)
+    plt.pause(0.001)
 
     # Detect objects:
     coins = []
