@@ -78,7 +78,7 @@ def flood_fill(img, img_filled, x, y, object_number) -> bool:
         flood_fill(img, img_filled, x+dx, y+dy, object_number)
     return True
 
-def color_objects(img : np.ndarray) -> tuple(np.ndarray, int):
+def color_objects(img : np.ndarray) -> tuple():
     """ Collor objects in image by separate numbers.
 
     Args:
@@ -173,9 +173,9 @@ def normalize(img) -> np.ndarray:
     """
     img_min = np.min(img)
     img_max = np.max(img)
-    img -= img_min
-    img /= (img_max - img_min)
-    img *= 255
+    img = img - img_min
+    img = img / (img_max - img_min)
+    img = img * 255
     return img.astype(np.uint8)
 
 # TODO: use P0

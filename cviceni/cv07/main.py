@@ -21,12 +21,19 @@ tj. např.: "Na souřadnici těžiště 10,23 se nachází: 5"
 
 cv07_segmentace.bmp
 """
+DEBUG = False
 
 import sys
 import cv2
+
 sys.path.append('../')
 sys.path.append('../my_libs/')
 sys.path.append('../my_libs/img/')
+if DEBUG:
+    for path in sys.path:
+        print(path)
+    input()
+
 from my_libs.tools import *
 from my_libs.colors import *
 from my_libs.img.processing import *
@@ -115,15 +122,17 @@ if __name__ == "__main__":
     centers = calculate_centers_of_objects(colored, range(1, number+1))
 
     # Draw centers:
+    # TODO: draw centers
 
 
     # Detect objects:
     coins = []
     coords = []
+    threshold = 4000
     for key in centers:
         print(key, centers[key])
         # detect coins:
-        if centers[key][2] > 4000:
+        if centers[key][2] > threshold:
             coins.append(5)
         else:
             coins.append(1)
