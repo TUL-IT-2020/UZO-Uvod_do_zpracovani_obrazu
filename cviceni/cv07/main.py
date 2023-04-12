@@ -21,14 +21,10 @@ tj. např.: "Na souřadnici těžiště 10,23 se nachází: 5"
 
 cv07_segmentace.bmp
 """
-from my_libs.img.functional import *
-from my_libs.img.processing import *
-from my_libs.colors import *
-from my_libs.tools import *
-import cv2
-import sys
 DEBUG = False
 
+import cv2
+import sys
 
 sys.path.append('../')
 sys.path.append('../my_libs/')
@@ -38,6 +34,10 @@ if DEBUG:
         print(path)
     input()
 
+from my_libs.img.functional import *
+from my_libs.img.processing import *
+from my_libs.colors import *
+from my_libs.tools import *
 
 def calculate_centers_of_objects(img, object_numbers=[1]) -> dict:
     """ Calculate centers of objects in image.
@@ -58,7 +58,7 @@ def calculate_centers_of_objects(img, object_numbers=[1]) -> dict:
 
     for x in range(X):
         for y in range(Y):
-            number = img[y][x]
+            number = img[x][y]
             if number not in object_numbers:
                 continue
             for index, moment in enumerate(moments):
@@ -80,48 +80,54 @@ if __name__ == "__main__":
     plt.close('all')
 
     img_file_name = mince
+    #img_file_name = barveni
     if not os.path.isfile(img_file_name):
-        raise FileNotFoundError(Red + "File:", Blue +
-                                str(img_file_name), Red + "not found!" + NC)
+        raise FileNotFoundError(
+            Red + "File:", Blue +
+            str(img_file_name), Red + "not found!" + NC)
 
     # Load image:
     img = cv2.imread(img_file_name)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     # convert to g:
-    g = img_to_g(img)
-    print(np.max(g), np.min(g))
-    g = normalize(g)
-    print(np.max(g), np.min(g))
+    g_color_space = img_to_g(img)
+    #print(np.max(g), np.min(g))
+    g_color_space = normalize(g_color_space)
+    #print(np.max(g), np.min(g))
 
     # Show image:
     plt.figure("Image")
-    plt.imshow(g, cmap='jet')
+    plt.imshow(g_color_space, cmap='jet')
     #plt.imshow(g, cmap='gray')
     plt.waitforbuttonpress()
+    plt.close()
 
     # Histogram:
     plt.figure("Histogram")
-    plt.hist(g.ravel(), bins=256, range=(0, 256))
+    plt.hist(g_color_space.ravel(), bins=256, range=(0, 256))
     plt.waitforbuttonpress()
+    plt.close()
 
     # Na základě analýzy histogramu byl vybrán prah T
     T = 100
 
     # Segmentate image:
-    g = segmentate(g, T, 255)
+    g_color_space = segmentate(g_color_space, T, 255)
     plt.figure("Segmentated image")
-    plt.imshow(g, cmap='gray')
+    plt.imshow(g_color_space, cmap='gray')
     plt.waitforbuttonpress()
 
     # Colored objects:
-    colored, number = color_objects(g)
+    colored, numbers = color_objects(g_color_space)
     plt.figure("Colored objects")
-    plt.imshow(colored, cmap='jet')
+    #plt.imshow(colored, cmap='jet')
+    plt.imshow(colored)
     plt.waitforbuttonpress()
+    plt.close()
 
     # Calculate centers:
-    centers = calculate_centers_of_objects(colored, range(1, number+1))
+    centers = calculate_centers_of_objects(colored, numbers)
 
     # Draw centers:
     img_centers = img.copy()
