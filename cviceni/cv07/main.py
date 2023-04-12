@@ -21,10 +21,14 @@ tj. např.: "Na souřadnici těžiště 10,23 se nachází: 5"
 
 cv07_segmentace.bmp
 """
+from my_libs.img.functional import *
+from my_libs.img.processing import *
+from my_libs.colors import *
+from my_libs.tools import *
+import cv2
+import sys
 DEBUG = False
 
-import sys
-import cv2
 
 sys.path.append('../')
 sys.path.append('../my_libs/')
@@ -34,29 +38,24 @@ if DEBUG:
         print(path)
     input()
 
-from my_libs.tools import *
-from my_libs.colors import *
-from my_libs.img.processing import *
-from my_libs.img.functional import *
 
-
-def calculate_centers_of_objects(img, object_numbers = [1]) -> dict:
+def calculate_centers_of_objects(img, object_numbers=[1]) -> dict:
     """ Calculate centers of objects in image.
 
     Args:
         img: image, where objects are marked by numbers
         object_numbers: list of numbers of objects
-    
+
     Return: 
         dict of centers
     """
     X, Y = img.shape
-    moments = [(1,0), (0,1), (0,0)]
+    moments = [(1, 0), (0, 1), (0, 0)]
 
     centers = {}
     for object_number in object_numbers:
         centers[object_number] = [0, 0, 0]
-    
+
     for x in range(X):
         for y in range(Y):
             number = img[y][x]
@@ -71,6 +70,7 @@ def calculate_centers_of_objects(img, object_numbers = [1]) -> dict:
 
     return centers
 
+
 mince = "cv07_segmentace.bmp"
 barveni = "cv07_barveni.bmp"
 
@@ -81,9 +81,10 @@ if __name__ == "__main__":
 
     img_file_name = mince
     if not os.path.isfile(img_file_name):
-        raise FileNotFoundError(Red + "File:", Blue + str(img_file_name), Red + "not found!" + NC)
+        raise FileNotFoundError(Red + "File:", Blue +
+                                str(img_file_name), Red + "not found!" + NC)
 
-    # Load image:    
+    # Load image:
     img = cv2.imread(img_file_name)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -103,7 +104,8 @@ if __name__ == "__main__":
     plt.figure("Histogram")
     plt.hist(g.ravel(), bins=256, range=(0, 256))
     plt.waitforbuttonpress()
-    # TODO: calculate T 
+
+    # Na základě analýzy histogramu byl vybrán prah T
     T = 100
 
     # Segmentate image:
@@ -145,15 +147,14 @@ if __name__ == "__main__":
             coins.append(1)
         # position:
         coords.append((centers[key][0], centers[key][1]))
-    
 
     # Print results:
     for i in range(len(coins)):
         print("Na souřadnici těžiště", coords[i], "se nachází:", coins[i])
-    
+
     coins_value_sum = sum(coins)
     print("Suma hodnot mincí:", coins_value_sum)
-    
+
     print(Green + "Done." + NC)
-    
+
 # END
