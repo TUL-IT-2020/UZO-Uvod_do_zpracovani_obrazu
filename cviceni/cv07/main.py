@@ -103,8 +103,9 @@ if __name__ == "__main__":
     plt.figure("Histogram")
     plt.hist(g.ravel(), bins=256, range=(0, 256))
     plt.waitforbuttonpress()
-    # TODO: calculate T 
 
+    # Na základě analýzy histogramu býl vybrán prah T
+    T = 100
 
     # Segmentate image:
     g = segmentate(g, T, 255)
