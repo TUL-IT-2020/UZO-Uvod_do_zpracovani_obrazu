@@ -21,6 +21,8 @@ tj. např.: "Na souřadnici těžiště 10,23 se nachází: 5"
 
 cv07_segmentace.bmp
 """
+import cv2
+import sys
 sys.path.append('../')
 sys.path.append('../my_libs/')
 sys.path.append('../my_libs/img/')
@@ -35,8 +37,6 @@ from my_libs.img.functional import *
 from my_libs.img.processing import *
 from my_libs.colors import *
 from my_libs.tools import *
-import cv2
-import sys
 
 
 def calculate_centers_of_objects(img, object_numbers=[1]) -> dict:

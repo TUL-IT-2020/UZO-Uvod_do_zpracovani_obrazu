@@ -127,7 +127,7 @@ def valid_coord(x : int, y : int, img : np.ndarray) -> bool:
         return False
     return True
 
-def color_objects(img : np.ndarray) -> tuple():
+def color_objects(img: np.ndarray) -> tuple:
     """ Collor objects in image by separate numbers.
 
     Args:
@@ -142,31 +142,38 @@ def color_objects(img : np.ndarray) -> tuple():
     Img background value is 255.
     Collor background number is 0.
     """
-    objects = {}
-    objects[0] = 0
+    objects = {0: 0}
     X, Y = img.shape
     array_of_keys = np.zeros([X, Y])
     object_number = 1
+    prev_row_changed = False
+
     for x in range(X):
         for y in range(Y):
             if img[x][y] == 255:
+                prev_row_changed = False
                 continue
             else:
-                for vector in [(-1,-1), (-1,0), (-1,1), (0,-1)]:
+                if prev_row_changed:
+                    array_of_keys[x][y] = array_of_keys[x][y-1]
+                    continue
+
+                for vector in [(-1, -1), (-1, 0), (-1, 1), (0, -1)]:
                     dx, dy = vector
-                    if not valid_coord(x+dx, y+dy, img):
+                    if not valid_coord(x + dx, y + dy, img):
                         # out of image
                         continue
-                    elif objects.get(array_of_keys[x+dx][y+dy], 0) != 0:
-                        # neighbour is colored
-                        array_of_keys[x][y] = array_of_keys[x+dx][y+dy]
+                    elif objects.get(array_of_keys[x + dx][y + dy], 0) != 0:
+                        # neighbor is colored
+                        array_of_keys[x][y] = array_of_keys[x + dx][y + dy]
+                        prev_row_changed = True
                         break
-                    else:
-                        # new object
-                        array_of_keys[x][y] = object_number
-                        objects[object_number] = object_number
-                        object_number += 1
-
+                else:
+                    # new object
+                    array_of_keys[x][y] = object_number
+                    objects[object_number] = object_number
+                    object_number += 1
+                    prev_row_changed = False
 
     colored = np.zeros([X, Y], dtype=np.uint8)
     for x in range(X):
@@ -174,6 +181,7 @@ def color_objects(img : np.ndarray) -> tuple():
             colored[x][y] = objects[array_of_keys[x][y]]
 
     return colored, object_number
+
 
 def histogram(img) -> np.ndarray:
     """ Calculate histogram of image
