@@ -84,7 +84,7 @@ def flood_fill(img, img_filled, x : int, y : int, object_number) -> bool:
         flood_fill(img, img_filled, x+dx, y+dy, object_number)
     return True
 
-def color_objects(img : np.ndarray) -> tuple():
+def color_objects_with_flood_fill(img : np.ndarray) -> tuple():
     """ Collor objects in image by separate numbers.
 
     Args:
@@ -110,6 +110,70 @@ def color_objects(img : np.ndarray) -> tuple():
                 object_number += 1
 
     return objects, object_number
+
+def valid_coord(x : int, y : int, img : np.ndarray) -> bool:
+    """ Check if coordinates are valid.
+
+    Args:
+        x: x coordinate
+        y: y coordinate
+        img: image to check
+
+    Return:
+        True if coordinates are valid, False if not
+    """
+    X, Y = img.shape
+    if x < 0 or x >= X or y < 0 or y >= Y:
+        return False
+    return True
+
+def color_objects(img : np.ndarray) -> tuple():
+    """ Collor objects in image by separate numbers.
+
+    Args:
+        img: image to collor objects
+
+    Return:
+        img: image with collored objects
+        object_number: number of objects
+
+    #### Algorithm
+    Maximal number of objects is 255.
+    Img background value is 255.
+    Collor background number is 0.
+    """
+    objects = {}
+    objects[0] = 0
+    X, Y = img.shape
+    array_of_keys = np.zeros([X, Y])
+    object_number = 1
+    for x in range(X):
+        for y in range(Y):
+            if img[x][y] == 255:
+                continue
+            else:
+                for vector in [(-1,-1), (-1,0), (-1,1), (0,-1)]:
+                    dx, dy = vector
+                    if not valid_coord(x+dx, y+dy, img):
+                        # out of image
+                        continue
+                    elif objects.get(array_of_keys[x+dx][y+dy], 0) != 0:
+                        # neighbour is colored
+                        array_of_keys[x][y] = array_of_keys[x+dx][y+dy]
+                        break
+                    else:
+                        # new object
+                        array_of_keys[x][y] = object_number
+                        objects[object_number] = object_number
+                        object_number += 1
+
+
+    colored = np.zeros([X, Y], dtype=np.uint8)
+    for x in range(X):
+        for y in range(Y):
+            colored[x][y] = objects[array_of_keys[x][y]]
+
+    return colored, object_number
 
 def histogram(img) -> np.ndarray:
     """ Calculate histogram of image

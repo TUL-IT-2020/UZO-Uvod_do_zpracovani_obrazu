@@ -104,7 +104,7 @@ if __name__ == "__main__":
     plt.hist(g.ravel(), bins=256, range=(0, 256))
     plt.waitforbuttonpress()
     # TODO: calculate T 
-
+    T = 100
 
     # Segmentate image:
     g = segmentate(g, T, 255)
@@ -122,7 +122,6 @@ if __name__ == "__main__":
     centers = calculate_centers_of_objects(colored, range(1, number+1))
 
     # Draw centers:
-    # TODO: draw centers
     img_centers = img.copy()
     for key in centers:
         center = (int(centers[key][0]), int(centers[key][1]))
