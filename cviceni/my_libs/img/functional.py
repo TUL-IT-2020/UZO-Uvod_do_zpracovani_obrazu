@@ -127,6 +127,7 @@ def valid_coord(x : int, y : int, img : np.ndarray) -> bool:
         return False
     return True
 
+
 def color_objects(img : np.ndarray) -> tuple():
     """ Collor objects in image by separate numbers.
 
@@ -135,13 +136,67 @@ def color_objects(img : np.ndarray) -> tuple():
 
     Return:
         img: image with collored objects
-        object_number: number of objects
+        list_of_objects: numbers of objects
 
     #### Algorithm
     Maximal number of objects is 255.
     Img background value is 255.
     Collor background number is 0.
     """
+
+    def object_is_background(objects, array_of_keys, x, y):
+        return objects.get(array_of_keys[x][y], 0) == 0
+    
+    def get_color(objects, array_of_keys, x, y):
+        return objects.get(array_of_keys[x][y], 0)
+
+    def solve_collor_from_neighbours(x : int, y : int, img : np.ndarray, array_of_keys : np.ndarray, objects : dict, object_number : int) -> int:
+        """ Collor neighbours of point.
+
+        Args:
+            x: x coordinate of point
+            y: y coordinate of point
+            img: image to collor
+            array_of_keys: array of keys
+            objects: dictionary of objects
+            object_number: number of object
+
+        Return:
+            object_number: number of object
+        """
+        
+        # 1) check if point is not background
+        if img[x][y] == 255:
+            return object_number
+
+        posible_colors = []
+        for vector in [(-1,-1), (-1,0), (-1,1), (0,-1)]:
+            dx, dy = vector
+            if not valid_coord(x+dx, y+dy, img):
+                # out of image
+                continue
+            elif object_is_background(objects, array_of_keys, x+dx, y+dy):
+                # neighbour is background
+                continue
+            elif get_color(objects, array_of_keys, x+dx, y+dy) not in posible_colors:
+                # neighbour is colored
+                posible_colors.append(get_color(objects, array_of_keys, x+dx, y+dy))
+        
+        #print("X:", x, "Y:", y, "Posible colors:", posible_colors)
+        if len(posible_colors) == 0:
+            # new object
+            array_of_keys[x][y] = object_number
+            objects[object_number] = object_number
+            object_number += 1
+            #print("New color:", object_number)
+        else:
+            # color from neighbours
+            selected_color = min(posible_colors)
+            array_of_keys[x][y] = selected_color
+            for color in posible_colors:
+                objects[color] = selected_color
+        return object_number
+    
     objects = {}
     objects[0] = 0
     X, Y = img.shape
@@ -149,31 +204,54 @@ def color_objects(img : np.ndarray) -> tuple():
     object_number = 1
     for x in range(X):
         for y in range(Y):
-            if img[x][y] == 255:
-                continue
-            else:
-                for vector in [(-1,-1), (-1,0), (-1,1), (0,-1)]:
-                    dx, dy = vector
-                    if not valid_coord(x+dx, y+dy, img):
-                        # out of image
-                        continue
-                    elif objects.get(array_of_keys[x+dx][y+dy], 0) != 0:
-                        # neighbour is colored
-                        array_of_keys[x][y] = array_of_keys[x+dx][y+dy]
-                        break
-                    else:
-                        # new object
-                        array_of_keys[x][y] = object_number
-                        objects[object_number] = object_number
-                        object_number += 1
+            object_number = solve_collor_from_neighbours(x, y, img, array_of_keys, objects, object_number)
 
-
+    # array of keys to colored image
     colored = np.zeros([X, Y], dtype=np.uint8)
+    object_numbers = {}
     for x in range(X):
         for y in range(Y):
-            colored[x][y] = objects[array_of_keys[x][y]]
+            color = get_color(objects, array_of_keys, x, y)
+            colored[x][y] = color
+            object_numbers[color] = color
+    
+    # remove background from list of objects
+    list_of_objects = list(object_numbers.values())
+    list_of_objects.sort()
+    list_of_objects.remove(0)
 
-    return colored, object_number
+    return colored, list_of_objects
+
+def calculate_centers_of_objects(img, object_numbers=[1]) -> dict:
+    """ Calculate centers of objects in image.
+
+    Args:
+        img: image, where objects are marked by numbers
+        object_numbers: list of numbers of objects
+
+    Return: 
+        dict of centers
+    """
+    X, Y = img.shape
+    moments = [(1, 0), (0, 1), (0, 0)]
+
+    centers = {}
+    for object_number in object_numbers:
+        centers[object_number] = [0, 0, 0]
+
+    for x in range(X):
+        for y in range(Y):
+            number = img[x][y]
+            if number not in object_numbers:
+                continue
+            for index, moment in enumerate(moments):
+                centers[number][index] += x**moment[0] * y**moment[1]
+
+    for key in centers:
+        centers[key][0] /= centers[key][2]
+        centers[key][1] /= centers[key][2]
+
+    return centers
 
 def histogram(img) -> np.ndarray:
     """ Calculate histogram of image
