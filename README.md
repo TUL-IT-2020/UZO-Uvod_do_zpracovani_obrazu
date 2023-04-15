@@ -7,6 +7,9 @@
 2. [[ME_UZO_podkladyProCvičení_02_IT.pdf|cvičení]]
 3. [[C03IT.pdf|cvičení]]
 4. [[C04-IT.pdf|cvičení]]
+5. [[ME_UZO_podkladyProCvičení_05_eler.pdf|cvičení]]
+6. [[ME_UZO_podkladyProCvičení_06_IT.pdf|cvičení]]
+7. [[ME_UZO_podkladyProCvičení_07_eler.pdf|cvičení]]
 
 ## Přednášky
 
