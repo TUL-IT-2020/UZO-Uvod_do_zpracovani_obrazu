@@ -1,4 +1,4 @@
-# By Pytel
+# By Pytel, mothspaws
 
 """
 1) Na základě analýzy obrazového histogramu segmentujte objekty (mince) 
@@ -21,48 +21,24 @@ tj. např.: "Na souřadnici těžiště 10,23 se nachází: 5"
 
 cv07_segmentace.bmp
 """
+DEBUG = False
 
-import sys
 import cv2
+import sys
+
 sys.path.append('../')
 sys.path.append('../my_libs/')
 sys.path.append('../my_libs/img/')
-from my_libs.tools import *
-from my_libs.colors import *
-from my_libs.img.processing import *
+if DEBUG:
+    for path in sys.path:
+        print(path)
+    input()
+
 from my_libs.img.functional import *
+from my_libs.img.processing import *
+from my_libs.colors import *
+from my_libs.tools import *
 
-
-def calculate_centers_of_objects(img, object_numbers = [1]) -> dict:
-    """ Calculate centers of objects in image.
-
-    Args:
-        img: image, where objects are marked by numbers
-        object_numbers: list of numbers of objects
-    
-    Return: 
-        dict of centers
-    """
-    X, Y = img.shape
-    moments = [(1,0), (0,1), (0,0)]
-
-    centers = {}
-    for object_number in object_numbers:
-        centers[object_number] = [0, 0, 0]
-    
-    for x in range(X):
-        for y in range(Y):
-            number = img[y][x]
-            if number not in object_numbers:
-                continue
-            for index, moment in enumerate(moments):
-                centers[number][index] += x**moment[0] * y**moment[1]
-
-    for key in centers:
-        centers[key][0] /= centers[key][2]
-        centers[key][1] /= centers[key][2]
-
-    return centers
 
 mince = "cv07_segmentace.bmp"
 barveni = "cv07_barveni.bmp"
@@ -73,71 +49,95 @@ if __name__ == "__main__":
     plt.close('all')
 
     img_file_name = mince
+    #img_file_name = barveni
     if not os.path.isfile(img_file_name):
-        raise FileNotFoundError(Red + "File:", Blue + str(img_file_name), Red + "not found!" + NC)
+        raise FileNotFoundError(
+            Red + "File:", Blue +
+            str(img_file_name), Red + "not found!" + NC)
 
-    # Load image:    
+    # Load image:
     img = cv2.imread(img_file_name)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     # convert to g:
-    g = img_to_g(img)
-    print(np.max(g), np.min(g))
-    g = normalize(g)
-    print(np.max(g), np.min(g))
+    g_color_space = img_to_g(img)
+    #print(np.max(g), np.min(g))
+    g_color_space = normalize(g_color_space)
+    #print(np.max(g), np.min(g))
 
     # Show image:
     plt.figure("Image")
-    plt.imshow(g, cmap='jet')
+    plt.imshow(g_color_space, cmap='jet')
     #plt.imshow(g, cmap='gray')
     plt.waitforbuttonpress()
+    plt.close()
 
     # Histogram:
     plt.figure("Histogram")
-    plt.hist(g.ravel(), bins=256, range=(0, 256))
+    plt.hist(g_color_space.ravel(), bins=256, range=(0, 256))
     plt.waitforbuttonpress()
-    # TODO: spociat hodnotu T !!!
-    T = 100
+    plt.close()
+
+    # Na základě analýzy histogramu byl vybrán prah T
+    T = 95
 
     # Segmentate image:
-    g = segmentate(g, T, 255)
+    g_color_space = segmentate(g_color_space, T, 255)
     plt.figure("Segmentated image")
-    plt.imshow(g, cmap='gray')
+    plt.imshow(g_color_space, cmap='gray')
     plt.waitforbuttonpress()
+    plt.close()
 
     # Colored objects:
-    colored, number = color_objects(g)
+    colored, numbers = color_objects(g_color_space)
+    print("Numbers:", numbers)
     plt.figure("Colored objects")
-    plt.imshow(colored, cmap='jet')
+    #plt.imshow(colored, cmap='jet')
+    plt.imshow(colored)
     plt.waitforbuttonpress()
+    plt.close()
 
     # Calculate centers:
-    centers = calculate_centers_of_objects(colored, range(1, number+1))
+    centers = calculate_centers_of_objects(colored, numbers)
 
     # Draw centers:
+    img_centers = img.copy()
+    for key in centers:
+        print(Green + "Object color:", Blue + str(key) + NC)
+        x, y = int(centers[key][0]), int(centers[key][1])
+        area = centers[key][2]
+        print(" - Center:", Blue + str(x) + NC, ",", Blue + str(y) + NC)
+        print(" - Area:", Blue + str(area) + NC)
 
+        center = (y, x)
+        cv2.circle(img_centers, center, 5, (255, 0, 0), -1)
+
+    plt.figure("Image with centers")
+    plt.imshow(img_centers)
+    plt.show(block=False)
+    plt.waitforbuttonpress()
 
     # Detect objects:
     coins = []
     coords = []
+    threshold = 4000
     for key in centers:
-        print(key, centers[key])
         # detect coins:
-        if centers[key][2] > 4000:
+        if centers[key][2] > threshold:
             coins.append(5)
         else:
             coins.append(1)
         # position:
         coords.append((centers[key][0], centers[key][1]))
-    
 
     # Print results:
     for i in range(len(coins)):
-        print("Na souřadnici těžiště", coords[i], "se nachází:", coins[i])
-    
+        x, y = coords[i]
+        print("Na souřadnici těžiště", int(x), ",", int(y), "se nachází:", coins[i])
+
     coins_value_sum = sum(coins)
     print("Suma hodnot mincí:", coins_value_sum)
-    
+
     print(Green + "Done." + NC)
-    
+
 # END

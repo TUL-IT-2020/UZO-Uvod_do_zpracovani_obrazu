@@ -36,6 +36,9 @@ def plot_imgs(
         cmap : color map
         figsize : size of figure
         window_name : name of window
+
+    ### Example:
+    ![Example](https://matplotlib.org/stable/_images/sphx_glr_subplots_demo_005.png)
     """
     plt.figure(window_name, figsize=figsize)
     #plt.rcParams["figure.figsize"] = figsize
