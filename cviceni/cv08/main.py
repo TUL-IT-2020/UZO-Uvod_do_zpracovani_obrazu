@@ -26,13 +26,26 @@ import cv2
 import sys
 
 sys.path.append('../')
+sys.path.append('../my_libs/')
+sys.path.append('../my_libs/img/')
 
 from my_libs.tools import *
 from my_libs.colors import *
+from my_libs.img.functional import *
+from my_libs.img.processing import *
 
+img_black = "cv08_im1.bmp"
+img_red = "cv08_im2.bmp"
 
 if __name__ == "__main__":
     clear()
 
+    img = cv2.imread(img_red)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    r_color_space = img_to_r(img)
+    r_color_space = normalize(r_color_space)
+    plot_imgs([r_color_space], ["r"], 1, cmaps=['jet'], cbars=[True], window_name="Image with red dots")
+    plt.close()
     
     print(Green + "Done." + NC)

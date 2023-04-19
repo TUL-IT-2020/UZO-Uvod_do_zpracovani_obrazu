@@ -23,6 +23,25 @@ def img_to_g(img) -> np.ndarray:
     g = (G*255)/(R+G+B)# + emps)
     return g.astype(np.uint8)
 
+def img_to_r(img) -> np.ndarray:
+    """ Convert image to r.
+
+    Args:
+        img: image to convert
+
+    Return:
+        r: r image
+    
+    #### Algorithm:
+    r = (R*255)/(R+G+B)
+    """
+    emps = float(1e-10)
+    R = img[:,:,0].astype(float)
+    G = img[:,:,1].astype(float)
+    B = img[:,:,2].astype(float)
+    r = (R*255)/(R+G+B + emps)
+    return r.astype(np.uint8)
+
 def segmentate(
         img, 
         threshold : np.uint8 = 100, 
