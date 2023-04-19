@@ -3,7 +3,6 @@
 import cv2
 import numpy as np
 
-
 def img_to_g(img) -> np.ndarray:
     """ Convert image to g.
 
@@ -45,7 +44,8 @@ def img_to_r(img) -> np.ndarray:
 def segmentate(
         img, 
         threshold : np.uint8 = 100, 
-        scale : np.uint8 = 255
+        scale : np.uint8 = 255,
+        invert : bool = False
     ) -> np.ndarray:
     """ Segmentate image by threshold.
 
@@ -61,7 +61,10 @@ def segmentate(
     ![gif](https://cse19-iiith.vlabs.ac.in/exp/image-segmentation/images/image001.gif)
     """
     # img : 0-1
-    img_segmented = img > threshold
+    if invert:
+        img_segmented = img < threshold
+    else:
+        img_segmented = img > threshold
     # img : 0-255 <= (0-1)*scale
     img_segmented = img_segmented * scale
     return img_segmented.astype(np.uint8)
