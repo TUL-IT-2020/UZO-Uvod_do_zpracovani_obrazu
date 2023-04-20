@@ -10,6 +10,9 @@
 5. [[ME_UZO_podkladyProCvičení_05_eler.pdf|cvičení]]
 6. [[ME_UZO_podkladyProCvičení_06_IT.pdf|cvičení]]
 7. [[ME_UZO_podkladyProCvičení_07_eler.pdf|cvičení]]
+8. [[ME_UZO_podkladyProCvičení_08_eler.pdf|cvičení]]
+9. [[ME_UZO_podkladyProCvičení_09_eler.pdf|cvičení]]
+10. [[ME_UZO_podkladyProCvičení_10_eler.pdf|cvičení]]
 
 ## Přednášky
 
