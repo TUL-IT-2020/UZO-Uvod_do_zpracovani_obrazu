@@ -25,7 +25,8 @@ class IMG(np.ndarray):
 
 def plot_imgs(
         imgs, titles, rows : int = 1, cmaps=None, 
-        cbars=None, figsize=(8,6), window_name="Graph"
+        cbars=None, figsize=(8,6), hist=None,
+        window_name="Graph"
     ):
     """ Plot images
     
@@ -35,6 +36,7 @@ def plot_imgs(
         rows : number of rows
         cmap : color map
         figsize : size of figure
+        hist : histogram
         window_name : name of window
 
     ### Example:
@@ -45,10 +47,12 @@ def plot_imgs(
     n = len(imgs)
     cols = int(np.ceil(n/rows))
     for i in range(n):
-        img = imgs[i]
         plt.subplot(rows, cols, i+1)
-        plt.imshow(img) 
         plt.title(titles[i])
+        if hist != None and hist[i] != None:
+            plt.hist(imgs[i].ravel(), bins=256, range=(0, 256))
+        else:
+            plt.imshow(imgs[i])
         if cmaps != None and cmaps[i] != None:
             plt.set_cmap(cmaps[i])
         if cbars != None and cbars[i]:
