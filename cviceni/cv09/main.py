@@ -52,14 +52,24 @@ if __name__ == "__main__":
         dtype=np.uint8
     )
 
-    # Buňky
     """
+    kernel = np.array([
+        [0, 1, 0], 
+        [1, 2, 1], 
+        [0, 1, 0]], 
+        dtype=np.uint8
+    )"""
+
+    # Buňky
+    #"""
     img_b = cv2.imread(img_b_name)
     img_b = cv2.cvtColor(img_b, cv2.COLOR_BGR2RGB)
     img_b_gray = cv2.cvtColor(img_b, cv2.COLOR_RGB2GRAY)    
     
-    img_b_erodet = morphology(img_b_gray, MorphologyOperation.GRAY_ERODE, kernel)
-    img_b_dilated = morphology(img_b_erodet, MorphologyOperation.GRAY_DILATE, kernel)
+    #img_b_erodet = morphology(img_b_gray, MorphologyOperation.GRAY_ERODE, kernel)
+    #img_b_dilated = morphology(img_b_erodet, MorphologyOperation.GRAY_DILATE, kernel)
+    img_b_erodet = cv2.morphologyEx(img_b_gray, cv2.MORPH_ERODE, kernel)
+    img_b_dilated = cv2.morphologyEx(img_b_erodet, cv2.MORPH_DILATE, kernel)
 
     img_c = cv2.imread(img_c_name)
     img_c = cv2.cvtColor(img_c, cv2.COLOR_BGR2RGB)
@@ -95,5 +105,5 @@ if __name__ == "__main__":
         hist=[None, True, None, None, True, None],
         window_name="Rýže"
     )
-
+    #"""
     print(Green + "Done." + NC)
