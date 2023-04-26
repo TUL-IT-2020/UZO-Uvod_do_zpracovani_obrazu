@@ -73,9 +73,10 @@ if __name__ == "__main__":
 
     centers = calculate_centers_of_objects(colored, numbers)
 
-    plot_imgs([img, img_gray, img_morphed], 
-              ["img", "gray", "morphed"], 2, 
-              cmaps=[None, "gray", "gray"],  
+    plot_imgs_x([img, img_gray, img_morphed, img], 
+              ["img", "gray", "morhed", "centers"], 2, 
+              cmaps=[None, "gray", "gray", None],
+              centers=centers,
               window_name="Image with black dots"
     )
 
@@ -93,11 +94,12 @@ if __name__ == "__main__":
         plt.close()
 
     r_segmented = segmentate(r_color_space, 100, invert=False)
-
-    plot_imgs([img, r_color_space, r_segmented], 
-              ["img", "red", "segmented"], 2, 
-              cmaps=[None, 'jet', 'gray'], 
-              cbars=[False, True, False], 
+    colored, numbers = color_objects(r_segmented)
+    centers = calculate_centers_of_objects(colored, numbers)
+    plot_imgs_x([img, r_color_space, r_segmented, img], 
+              ["img", "red", "segmented", "centers"], 2, 
+              cmaps=[None, 'jet', 'gray', None],
+              centers=centers,
               window_name="Image with red dots"
     )
     
