@@ -94,8 +94,18 @@ if __name__ == "__main__":
         plt.close()
 
     r_segmented = segmentate(r_color_space, 100, invert=False)
-    colored, numbers = color_objects(r_segmented)
+    r_inverted = cv2.bitwise_not(r_segmented)
+    colored, numbers = color_objects(r_inverted)
     centers = calculate_centers_of_objects(colored, numbers)
+    if DEBUG:
+        print("Centers:")
+        for number in centers:
+            print(centers[number])
+        plt.figure("Colored objects")
+        plt.imshow(colored)
+        plt.waitforbuttonpress()
+        plt.close()
+    
     plot_imgs_x([img, r_color_space, r_segmented, img], 
               ["img", "red", "segmented", "centers"], 2, 
               cmaps=[None, 'jet', 'gray', None],

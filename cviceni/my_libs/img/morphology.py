@@ -12,6 +12,12 @@ class MorphologyOperation(Enum):
     GRAY_CLOSE = auto()
     GRAY_TOP_HAT = auto()
 
+def gray_erode_1D(img, kernel):
+    pass
+
+def gray_dilate_1D(img, kernel):
+    pass
+
 def gray_erode(img, kernel):
     out = np.zeros(img.shape, dtype=np.uint8)
     for i_x in range(img.shape[0]):
