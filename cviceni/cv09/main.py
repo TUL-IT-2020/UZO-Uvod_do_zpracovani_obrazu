@@ -61,15 +61,15 @@ if __name__ == "__main__":
     )"""
 
     # Buňky
-    #"""
+    """
     img_b = cv2.imread(img_b_name)
     img_b = cv2.cvtColor(img_b, cv2.COLOR_BGR2RGB)
     img_b_gray = cv2.cvtColor(img_b, cv2.COLOR_RGB2GRAY)    
     
-    #img_b_erodet = morphology(img_b_gray, MorphologyOperation.GRAY_ERODE, kernel)
-    #img_b_dilated = morphology(img_b_erodet, MorphologyOperation.GRAY_DILATE, kernel)
-    img_b_erodet = cv2.morphologyEx(img_b_gray, cv2.MORPH_ERODE, kernel)
-    img_b_dilated = cv2.morphologyEx(img_b_erodet, cv2.MORPH_DILATE, kernel)
+    img_b_erodet = morphology(img_b_gray, MorphologyOperation.GRAY_ERODE, kernel)
+    img_b_dilated = morphology(img_b_erodet, MorphologyOperation.GRAY_DILATE, kernel)
+    #img_b_erodet = cv2.morphologyEx(img_b_gray, cv2.MORPH_ERODE, kernel)
+    #img_b_dilated = cv2.morphologyEx(img_b_erodet, cv2.MORPH_DILATE, kernel)
 
     img_c = cv2.imread(img_c_name)
     img_c = cv2.cvtColor(img_c, cv2.COLOR_BGR2RGB)
@@ -85,16 +85,36 @@ if __name__ == "__main__":
         ["gray", "gray", "gray", "gray", "gray", "gray"],
         window_name="Bunky"
     )
-    """
+    #"""
 
     # Rice
     img_rice = cv2.imread(img_rice_name)
     img_rice = cv2.cvtColor(img_rice, cv2.COLOR_BGR2RGB)
     img_rice_gray = cv2.cvtColor(img_rice, cv2.COLOR_RGB2GRAY)
+    
+    
+    
+    img_rice = cv2.imread(img_rice_name)
+    img_rice = cv2.cvtColor(img_rice, cv2.COLOR_BGR2RGB)
+    img_rice_gray = cv2.cvtColor(img_rice, cv2.COLOR_RGB2GRAY)
+    """
+    output_adapthresh = cv2.adaptiveThreshold(img_rice_gray, 255.0, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 51, -20.0)
+    kernel = np.ones((5,5),np.uint8)
+    output_erosion = cv2.erode(output_adapthresh, kernel)
+
+    contours, _ = cv2.findContours(output_erosion, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    output_contour = cv2.cvtColor(img_rice_gray, cv2.COLOR_GRAY2BGR)
+    cv2.drawContours(output_contour, contours, -1, (0, 0, 255), 2)
+    print("Number of detected contours", len(contours))
+    cv2.imshow("Original", output_contour)
+    cv2.imshow("Rice", img_rice)
+    plt.waitforbuttonpress()
+    #"""
+
     img_rice_segmented = segmentate(img_rice_gray, 135)
-    img_rice_top_hat = morphology(img_rice_gray, MorphologyOperation.GRAY_TOP_HAT, kernel)
+    #img_rice_top_hat = morphology(img_rice_gray, MorphologyOperation.GRAY_TOP_HAT, kernel)
     #img_rice_gray = cv2.bitwise_not(img_rice_gray)
-    #img_rice_top_hat = cv2.morphologyEx(img_rice_gray, cv2.MORPH_TOPHAT, kernel)
+    img_rice_top_hat = cv2.morphologyEx(img_rice_gray, cv2.MORPH_TOPHAT, kernel)
     img_rice_top_hat_segmented = segmentate(img_rice_top_hat, 10)
 
     plot_imgs(

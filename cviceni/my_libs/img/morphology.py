@@ -1,4 +1,5 @@
 # By Pytel
+# https://core.ac.uk/download/pdf/44387378.pdf
 
 import numpy as np
 from enum import Enum, auto
@@ -23,10 +24,6 @@ class MorphologyOperation(Enum):
     GRAY_TOP_HAT = auto()
 
 def gray_erode_1D(img, kernel):
-    """
-    Uřezávám vršky
-    min{f(x + z) - k(z)}; z e K; x + z e F
-    """
     sumed_kernel = np.sum(kernel, axis=0, dtype=int)
     out = np.zeros_like(img)
     for i_x in range(img.shape[0]):
@@ -42,10 +39,6 @@ def gray_erode_1D(img, kernel):
     return out
 
 def gray_dilate_1D(img, kernel):
-    """
-    Zaplácávám díry
-    max{f(x - z) + k(z)}; z e K; x - z e F
-    """
     sumed_kernel = np.sum(kernel, axis=0, dtype=int)
     out = np.zeros_like(img)
     for i_x in range(img.shape[0]):
@@ -100,23 +93,53 @@ def gray_dilate_2D(img, kernel):
             out[i_x, i_y] = max_val
     return out
 
-def gray_erode(img, kernel):    
-    out = np.zeros_like(img)
+def gray_erode(img, kernel):
+    """
+    Uřezávám vršky
+    min{f(x + z) - k(z)}; z e K; x + z e F
+    """
     I_X, I_Y = img.shape
     K_X, K_Y = kernel.shape
-    for i_x in range(I_X - K_X):
-        for i_y in range(I_Y - K_Y):
-            out[i_x, i_y] = np.min(img[i_x:i_x+K_X, i_y:i_y+K_Y] - kernel)
+    out = np.zeros_like(img)
+    img_padded = cv2.copyMakeBorder(img, 1, K_X-1, 1, K_Y-1, cv2.BORDER_CONSTANT, value=255)
+    for i_x in range(I_X):
+        for i_y in range(I_Y):
+            out[i_x, i_y] = np.min(img_padded[i_x:i_x+K_X, i_y:i_y+K_Y] - kernel)
     return out
 
 def gray_dilate(img, kernel):
-    out = np.zeros_like(img)
+    """
+    Zaplácávám díry
+    max{f(x - z) + k(z)}; z e K; x - z e F
+    """
     I_X, I_Y = img.shape
     K_X, K_Y = kernel.shape
-    for i_x in range(K_X, I_X):
-        for i_y in range(K_Y, I_Y):
-            out[i_x-K_X, i_y-K_Y] = np.max(img[i_x-K_X:i_x, i_y-K_Y:i_y] + kernel)
+    out = np.zeros_like(img)
+    img_padded = cv2.copyMakeBorder(img, K_X-1, 1, K_Y-1, 1, cv2.BORDER_CONSTANT, value=0)
+    for i_x in range(I_X):
+        for i_y in range(I_Y):
+            out[i_x, i_y] = np.max(img_padded[i_x:i_x+K_X, i_y:i_y+K_Y] + kernel)
     return out
+
+"""
+def dilate(img_gray, kernel):
+    output = np.zeros_like(img_gray)
+
+    for i in range(1,img_gray.shape[0]-1):
+        for j in range(1, img_gray.shape[1]-1):
+            temp = img_gray[i:i+2, j-1:j+2]
+            output[i, j] = np.max(temp*kernel)
+    return output[1:-1,1:-1]
+
+def erode(img_gray, kernel):
+    output = np.zeros_like(img_gray)
+
+    for i in range(1,img_gray.shape[0]-1):
+        for j in range(1, img_gray.shape[1]-1):
+            temp = img_gray[i:i+2, j-1:j+2]
+            output[i, j] = np.min(temp/kernel)
+    return output[1:-1,1:-1]
+"""
 
 def morphology(img, operation : MorphologyOperation, kernel):
     if operation == MorphologyOperation.GRAY_ERODE_1D:
@@ -157,20 +180,15 @@ def morphology(img, operation : MorphologyOperation, kernel):
         dilarated = gray_dilate(img, kernel)
         eroded = gray_erode(dilarated, kernel)
         return eroded
-    
-    else:
-        raise Exception("Unknown operation")
-    
-    """
     elif operation == MorphologyOperation.GRAY_TOP_HAT:
-        opened = gray_open(img, kernel)
-        closed = gray_close(img, kernel)
+        eroded = gray_erode(img, kernel)
+        opened = gray_dilate(eroded, kernel)
         
         from processing import plot_imgs
         plot_imgs(
-            [img, opened, closed], 
-            ["Original", "Opened", "Closed"],
-            1, ["gray", "gray", "gray"]
+            [img, opened], 
+            ["Original", "Opened"],
+            1, ["gray", "gray"]
         )
         out = np.zeros(img.shape, dtype=np.uint8)
         for x in range(img.shape[0]):
@@ -184,4 +202,5 @@ def morphology(img, operation : MorphologyOperation, kernel):
                     out[x, y] = delta
         # return img - gray_open(img, kernel)
         return out.astype(np.uint8)
-    """
+    else:
+        raise Exception("Unknown operation")
