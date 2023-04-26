@@ -100,7 +100,8 @@ if __name__ == "__main__":
               ["img", "red", "segmented", "centers"], 2, 
               cmaps=[None, 'jet', 'gray', None],
               centers=centers,
-              window_name="Image with red dots"
+              window_name="Image with red dots",
+              points=(233, 150, 122)
     )
-    
+
     print(Green + "Done." + NC)

@@ -60,7 +60,7 @@ def plot_imgs(
 
 def plot_imgs_x(
     imgs, titles, rows: int = 1, cmaps=None,
-    cbars=None, centers=None, figsize=(8, 6), window_name="Graph"
+    cbars=None, centers=None, figsize=(8, 6), window_name="Graph", points=(255, 0, 0)
 ):
     """ Plot images
 
@@ -94,7 +94,7 @@ def plot_imgs_x(
     for key in centers:
         x, y = int(centers[key][0]), int(centers[key][1])
         center = (y, x)
-        cv2.circle(img_centers, center, 5, (255, 0, 0), -1)
+        cv2.circle(img_centers, center, 5, points, -1)
     plt.imshow(img_centers)
     plt.show()
     plt.waitforbuttonpress()
