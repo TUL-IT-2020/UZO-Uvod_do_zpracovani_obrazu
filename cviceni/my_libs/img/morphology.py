@@ -100,53 +100,22 @@ def gray_dilate_2D(img, kernel):
             out[i_x, i_y] = max_val
     return out
 
-def gray_erode(img, kernel):
-    def min_sum(img, kernel, i_x, i_y):
-        if img[i_x, i_y] == 0:
-            return 0
-        min_val = 255
-        for k_x in range(kernel.shape[0]):
-            for k_y in range(kernel.shape[1]):
-                x = i_x + k_x - kernel.shape[0] // 2
-                y = i_y + k_y - kernel.shape[1] // 2
-                if not valid_coord(x, y, img):
-                    continue
-                if img[x, y] - kernel[k_x, k_y] < min_val:
-                    min_val = img[x, y]
-        return min_val
-    
+def gray_erode(img, kernel):    
     out = np.zeros_like(img)
     I_X, I_Y = img.shape
     K_X, K_Y = kernel.shape
-    for i_x in range(I_X):
-        for i_y in range(I_Y):
+    for i_x in range(I_X - K_X):
+        for i_y in range(I_Y - K_Y):
             out[i_x, i_y] = np.min(img[i_x:i_x+K_X, i_y:i_y+K_Y] - kernel)
-            #out[i_x, i_y] = min_sum(img, kernel, i_x, i_y)
     return out
 
 def gray_dilate(img, kernel):
-    def max_sum(img, kernel, i_x, i_y):
-        if img[i_x, i_y] == 255:
-            return 255
-        max_val = 0
-        for k_x in range(kernel.shape[0]):
-            for k_y in range(kernel.shape[1]):
-                x = i_x + k_x - kernel.shape[0] // 2
-                y = i_y + k_y - kernel.shape[1] // 2
-                if not valid_coord(x, y, img):
-                    continue
-                if img[x, y] + kernel[k_x, k_y] > max_val:
-                    max_val = img[x, y]
-        return max_val
-
     out = np.zeros_like(img)
     I_X, I_Y = img.shape
     K_X, K_Y = kernel.shape
-    for i_x in range(I_X):
-        for i_y in range(I_Y):
-            print(img[i_x:i_x-K_X, i_y:i_y-K_Y].shape, kernel.shape)
-            out[i_x, i_y] = np.max(img[i_x:i_x-K_X, i_y:i_y-K_Y] + kernel)
-            #out[i_x, i_y] = max_sum(img, kernel, i_x, i_y)
+    for i_x in range(K_X, I_X):
+        for i_y in range(K_Y, I_Y):
+            out[i_x-K_X, i_y-K_Y] = np.max(img[i_x-K_X:i_x, i_y-K_Y:i_y] + kernel)
     return out
 
 def morphology(img, operation : MorphologyOperation, kernel):
