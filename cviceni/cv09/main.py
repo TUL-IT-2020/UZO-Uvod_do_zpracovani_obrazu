@@ -61,7 +61,6 @@ if __name__ == "__main__":
     )"""
 
     # Buňky
-    """
     img_b = cv2.imread(img_b_name)
     img_b = cv2.cvtColor(img_b, cv2.COLOR_BGR2RGB)
     img_b_gray = cv2.cvtColor(img_b, cv2.COLOR_RGB2GRAY)    
@@ -85,37 +84,20 @@ if __name__ == "__main__":
         ["gray", "gray", "gray", "gray", "gray", "gray"],
         window_name="Bunky"
     )
-    #"""
 
     # Rice
     img_rice = cv2.imread(img_rice_name)
     img_rice = cv2.cvtColor(img_rice, cv2.COLOR_BGR2RGB)
     img_rice_gray = cv2.cvtColor(img_rice, cv2.COLOR_RGB2GRAY)
     
+    kernel = np.ones((15, 15), np.uint8) #15 x 15
+    #kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(15,15)) #10 20
+    #kernel = cv.getStructuringElement(cv.MORPH_CROSS,(25,21)) #10 20
     
-    
-    img_rice = cv2.imread(img_rice_name)
-    img_rice = cv2.cvtColor(img_rice, cv2.COLOR_BGR2RGB)
-    img_rice_gray = cv2.cvtColor(img_rice, cv2.COLOR_RGB2GRAY)
-    """
-    output_adapthresh = cv2.adaptiveThreshold(img_rice_gray, 255.0, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 51, -20.0)
-    kernel = np.ones((5,5),np.uint8)
-    output_erosion = cv2.erode(output_adapthresh, kernel)
-
-    contours, _ = cv2.findContours(output_erosion, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    output_contour = cv2.cvtColor(img_rice_gray, cv2.COLOR_GRAY2BGR)
-    cv2.drawContours(output_contour, contours, -1, (0, 0, 255), 2)
-    print("Number of detected contours", len(contours))
-    cv2.imshow("Original", output_contour)
-    cv2.imshow("Rice", img_rice)
-    plt.waitforbuttonpress()
-    #"""
-
     img_rice_segmented = segmentate(img_rice_gray, 135)
-    #img_rice_top_hat = morphology(img_rice_gray, MorphologyOperation.GRAY_TOP_HAT, kernel)
-    #img_rice_gray = cv2.bitwise_not(img_rice_gray)
-    img_rice_top_hat = cv2.morphologyEx(img_rice_gray, cv2.MORPH_TOPHAT, kernel)
-    img_rice_top_hat_segmented = segmentate(img_rice_top_hat, 10)
+    img_rice_top_hat = morphology(img_rice_gray, MorphologyOperation.GRAY_TOP_HAT, kernel)
+    #img_rice_top_hat = cv2.morphologyEx(img_rice_gray, cv2.MORPH_TOPHAT, kernel)
+    img_rice_top_hat_segmented = segmentate(img_rice_top_hat, 60)
 
     plot_imgs(
         [img_rice,img_rice,img_rice_segmented, img_rice_top_hat,img_rice_top_hat,img_rice_top_hat_segmented],
@@ -125,5 +107,25 @@ if __name__ == "__main__":
         hist=[None, True, None, None, True, None],
         window_name="Rýže"
     )
-    #"""
+    
+    rice_inverted = cv2.bitwise_not(img_rice_top_hat_segmented)
+    colored, numbers = color_objects(rice_inverted)
+    centers_dict = calculate_centers_of_objects(colored, numbers)
+    
+    centers_list = []
+    for key in centers_dict:
+        area = centers_dict[key][2]
+        x = centers_dict[key][0]
+        y = centers_dict[key][1]
+        if area > 100:
+            centers_list.append([x, y])
+    print("Number of detected objects:", Blue + str(len(centers_list)) + NC + ".")
+    
+    centers = np.array(centers_list, dtype=np.int32)
+    #plt.imshow(img_rice_top_hat_segmented)
+    plt.scatter(centers[:, 1], centers[:, 0], marker="x", color="red", s=10)
+    plt.set_cmap("gray")
+    plt.show()
+    plt.waitforbuttonpress()
+    
     print(Green + "Done." + NC)

@@ -181,15 +181,13 @@ def morphology(img, operation : MorphologyOperation, kernel):
         eroded = gray_erode(dilarated, kernel)
         return eroded
     elif operation == MorphologyOperation.GRAY_TOP_HAT:
+        """
+        f(x) - (f(x) o B)
+        img - opened(img, kernel)
+        """
         eroded = gray_erode(img, kernel)
         opened = gray_dilate(eroded, kernel)
         
-        from processing import plot_imgs
-        plot_imgs(
-            [img, opened], 
-            ["Original", "Opened"],
-            1, ["gray", "gray"]
-        )
         out = np.zeros(img.shape, dtype=np.uint8)
         for x in range(img.shape[0]):
             for y in range(img.shape[1]):
@@ -200,7 +198,6 @@ def morphology(img, operation : MorphologyOperation, kernel):
                     out[x, y] = 255
                 else:
                     out[x, y] = delta
-        # return img - gray_open(img, kernel)
         return out.astype(np.uint8)
     else:
         raise Exception("Unknown operation")
