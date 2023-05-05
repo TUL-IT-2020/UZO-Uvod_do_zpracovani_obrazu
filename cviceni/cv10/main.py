@@ -41,7 +41,7 @@ if __name__ == "__main__":
     img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
     # Apply thresholding
-    ret, thresh = cv2.threshold(img_gray, 130, 255, 0)
+    _, thresh = cv2.threshold(img_gray, 130, 255, 0)
 
     # Invert the thresholded image
     thresh = cv2.bitwise_not(thresh)
@@ -89,11 +89,9 @@ if __name__ == "__main__":
 
     plot_imgs(
         [img_gray, thresh, closing, sure_bg, dist_transform, sure_fg, unknown, markers, img],
-        ["Původní", "Adaptivní prahování", "Uzavření", "Označení pozadí", "Transformace vzdálenosti", "Označení popředí", "Neznámé", "Vodní rozvodí", "Výsledek"],
+        ["Původní", "Prahování", "Uzavření", "Označení pozadí", "Transformace vzdálenosti", "Označení popředí", "Neznámé", "Vodní rozvodí", "Výsledek"],
         rows=3,
-        cmaps=[None, "gray", "gray", "gray", "gray", "gray", "gray", "gray", None],
-        cbars=[False, False, False, False, False, False, False, False, False],
-        figsize=(12, 12),
+        cmaps=["gray", "gray", "gray", "gray", "gray", "gray", "gray", "jet", None],
         window_name="Watershed"
     )
     

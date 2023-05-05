@@ -35,12 +35,15 @@ Lineární algebra:
 - Konvoluce 
 - Korelace 
 - hranový detektor
+
 Barvení oblastí:
 - první průchod
+
 Vzdálenosti: 
 - šachovnicová 
 - euklidovská 
 - manhattanská
+
 Morfologické operace na jednoduché množině:
 - otevření
 - uzavřením

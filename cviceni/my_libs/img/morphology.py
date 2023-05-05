@@ -7,21 +7,15 @@ from enum import Enum, auto
 from my_libs.img.functional import *
 
 class MorphologyOperation(Enum):
-    GRAY_ERODE_1D = auto()
-    GRAY_DILATE_1D = auto()
-    GRAY_OPEN_1D = auto()
-    GRAY_CLOSE_1D = auto()
-    GRAY_TOP_HAT_1D = auto()
-    GRAY_ERODE_2D = auto()
-    GRAY_DILATE_2D = auto()
-    GRAY_OPEN_2D = auto()
-    GRAY_CLOSE_2D = auto()
-    GRAY_TOP_HAT_2D = auto()
     GRAY_ERODE = auto()
     GRAY_DILATE = auto()
     GRAY_OPEN = auto()
     GRAY_CLOSE = auto()
     GRAY_TOP_HAT = auto()
+    GRAY_ERODE_1D = auto()
+    GRAY_DILATE_1D = auto()
+    GRAY_OPEN_1D = auto()
+    GRAY_CLOSE_1D = auto()
 
 def gray_erode_1D(img, kernel):
     sumed_kernel = np.sum(kernel, axis=0, dtype=int)
@@ -51,46 +45,6 @@ def gray_dilate_1D(img, kernel):
                     delta = int(img[x, y]) + sumed_kernel[k_x]
                     values.append(255 if delta > 255 else delta)
             out[i_x, i_y] = np.max(values)
-    return out
-
-def gray_erode_2D(img, kernel):
-    out = np.zeros_like(img)
-    for i_x in range(img.shape[0]):
-        for i_y in range(img.shape[1]):
-            if img[i_x, i_y] == 0:
-                continue
-            min_val = 255
-            for k_x in range(kernel.shape[0]):
-                for k_y in range(kernel.shape[1]):
-                    if kernel[k_x, k_y] == 0:
-                        continue
-                    x = i_x + k_x - kernel.shape[0] // 2
-                    y = i_y + k_y - kernel.shape[1] // 2
-                    if not valid_coord(x, y, img):
-                        continue
-                    if img[x, y] < min_val:
-                        min_val = img[x, y]
-            out[i_x, i_y] = min_val
-    return out
-
-def gray_dilate_2D(img, kernel):
-    out = np.zeros_like(img)
-    for i_x in range(img.shape[0]):
-        for i_y in range(img.shape[1]):
-            if img[i_x, i_y] == 255:
-                continue
-            max_val = 0
-            for k_x in range(kernel.shape[0]):
-                for k_y in range(kernel.shape[1]):
-                    if kernel[k_x, k_y] == 0:
-                        continue
-                    x = i_x + k_x - kernel.shape[0] // 2
-                    y = i_y + k_y - kernel.shape[1] // 2
-                    if not valid_coord(x, y, img):
-                        continue
-                    if img[x, y] > max_val:
-                        max_val = img[x, y]
-            out[i_x, i_y] = max_val
     return out
 
 def gray_erode(img, kernel):
@@ -153,19 +107,6 @@ def morphology(img, operation : MorphologyOperation, kernel):
     elif operation == MorphologyOperation.GRAY_CLOSE_1D:
         dilarated = gray_dilate_1D(img, kernel)
         eroded = gray_erode_1D(dilarated, kernel)
-        return eroded
-    
-    if operation == MorphologyOperation.GRAY_ERODE_2D:
-        return gray_erode_2D(img, kernel)
-    elif operation == MorphologyOperation.GRAY_DILATE_2D:
-        return gray_dilate_2D(img, kernel)
-    elif operation == MorphologyOperation.GRAY_OPEN_2D:
-        eroded = gray_erode_2D(img, kernel)
-        dilarated = gray_dilate_2D(eroded, kernel)
-        return dilarated
-    elif operation == MorphologyOperation.GRAY_CLOSE_2D:
-        dilarated = gray_dilate_2D(img, kernel)
-        eroded = gray_erode_2D(dilarated, kernel)
         return eroded
     
     if operation == MorphologyOperation.GRAY_ERODE:
