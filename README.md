@@ -36,17 +36,20 @@ Lineární algebra:
 - Korelace 
 - hranový detektor
 
-Barvení oblastí:
+[[Barvení objektu|Barvení oblastí]]:
 - první průchod
 
 Vzdálenosti: 
 - šachovnicová 
 - euklidovská 
-- manhattanská
+- manhattanská 
 
 Morfologické operace na jednoduché množině:
 - otevření
-- uzavřením
+- uzavření
 
-## Poznámky
+## Zdroje:
+[[Moderní metody identifikace objektů.pdf]]
+[[Morfologické operace ve zpracování obrazu.pdf]]
+[[Zpracování digitalizovaného obrazu.pdf]]
 
