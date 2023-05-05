@@ -34,22 +34,23 @@ Povolené libovolné vlastnoručně psané materiály. Kalkulačka. 10 jednoduch
 Lineární algebra:
 - Konvoluce 
 - Korelace 
-- hranový detektor
+- [[Hranové detektory|Hranový detektor]]
 
 [[Barvení objektu|Barvení oblastí]]:
 - první průchod
 
 Vzdálenosti: 
-- šachovnicová 
-- euklidovská 
-- manhattanská 
+- [[Metriky#Šachovnicová vzdálenost|Šachovnicová]]
+- [[Metriky#Euklidovská vzdálenost (Euclidean dist.)|Euklidovská]]
+- [[Metriky#Vzdálenost v městských blocích (Manhattan dist.)|Manhattanská]]
 
 Morfologické operace na jednoduché množině:
-- otevření
-- uzavření
+- [[Morfologické operace#Otevření|otevření]]
+- [[Morfologické operace#Uzavření|uzavření]]
 
 ## Zdroje:
 [[Moderní metody identifikace objektů.pdf]]
 [[Morfologické operace ve zpracování obrazu.pdf]]
 [[Zpracování digitalizovaného obrazu.pdf]]
 
+https://github.com/fi-GarO/UZO-2022/blob/main/ZkouskaOtazky.md
