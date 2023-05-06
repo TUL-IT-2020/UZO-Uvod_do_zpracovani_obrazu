@@ -1,12 +1,18 @@
 # Hranové detektory
+Hrany jako průchody nulou druhé derivace obrazové funkce. Nevýhoda operátorů aproximujících derivaci diferencemi v malém okolí je velká závislost jejich chování na konkrétním obrázku, velikost masky musí odpovídat velikosti detailů v obrazu, nejsou nezávislé na měřítku, velká citlivost na šum.
+![[Druhá derivace signálu.PNG]]
+
+## Roberts
+![[Robertsův operátor.PNG]]
 
 ## Laplace
-![edgeLaplace](https://user-images.githubusercontent.com/46580540/170127195-00a7f442-df3a-4be2-acb7-eb06190de464.png)
+![[Laplaceuv operátor.PNG]]
 
-## Sobel
-![noiseSobel](https://user-images.githubusercontent.com/46580540/170127371-78bb18a5-8eea-446d-afab-e8150f97c3bb.png)
+## Sobel & Prewitt
+![[Prewittové operátor.PNG]]
 
-## Canny
-- nejprve potřeba redukovat šum
+## Další
+![[Další operátory.PNG]]
 
-![edgesCanny](https://user-images.githubusercontent.com/46580540/170128042-eb72fb74-d3a4-4fee-a6cb-cd6975bbdc59.png)
+## Zdroje:
+[[ME_UZO_prezentacePřednášky_06.pdf]]

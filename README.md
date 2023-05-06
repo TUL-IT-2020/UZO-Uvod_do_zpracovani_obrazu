@@ -48,6 +48,10 @@ Morfologické operace na jednoduché množině:
 - [[Morfologické operace#Otevření|otevření]]
 - [[Morfologické operace#Uzavření|uzavření]]
 
+## Poznámky
+[[Transformace jasu]]
+[[Filtrace šumu]]
+
 ## Zdroje:
 [[Moderní metody identifikace objektů.pdf]]
 [[Morfologické operace ve zpracování obrazu.pdf]]

@@ -1,6 +1,5 @@
 # Morfologické operace
 
-# Morfologické operace 
 ## Na binárním obraze
 https://docs.opencv.org/4.x/d9/d61/tutorial_py_morphological_ops.html
 ### Dilatace 
