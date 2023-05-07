@@ -17,14 +17,16 @@ x & y & z \\\
 s & t & r
 \end{vmatrix}
 $$
+
 ## Konvoluce
-1. Převrátit matici B vzhledem k ose X a Y (180 stupňů rotace). Nazvěme tuto matici B_rot.
+1. Vytvoríme matici B_transp, která je transponovanou maticí B.
+
 $$
-B_{rot}=
+B_{transp}=
 \begin{vmatrix}
-r & t & s \\\
-z & y & x \\\
-w & v & u
+u & x & s \\\
+v & y & t \\\
+w & z & r
 \end{vmatrix}
 $$
 
@@ -41,7 +43,7 @@ A_{ext}=
 \end{vmatrix}
 $$
 
-3. Provést konvoluci matic A_ext a B_rot. Výsledkem bude matice C.
+3. Provést konvoluci matic A_ext a B_transp. Výsledkem bude matice C.
     Násobit prvky matic B_rot a A_ext, kde se B_rot překrývá s A_ext, a poté provést sumaci.
 
     **První pozice (horní levý roh A_ext):**
@@ -54,23 +56,23 @@ $$
     \end{vmatrix}
     *
     \begin{vmatrix}
-    r & t & s \\\
-    z & y & x \\\
-    w & v & u
+    u & x & s \\\
+    v & y & t \\\
+    w & z & r
     \end{vmatrix}
     $$
 
     $$
     \begin{vmatrix}
-    r*0 & t*0 & s*0 \\\
-    z*0 & y*a & x*b \\\
-    w*0 & v*d & u*e
+    0*u & 0*x & 0*s \\\
+    0*v & a*y & b*t \\\
+    0*w & d*z & e*r
     \end{vmatrix}
     $$
 
-    Suma: $a*y+b*x+d*v+e*u$
+    Suma: $a*y+b*t+d*z+e*r$
 
-    **Posunout B_rot o jedno místo doprava a opakovat:**
+    **Posunout B_transp o jedno místo doprava a opakovat:**
 
     $$
     \begin{vmatrix}
@@ -80,27 +82,26 @@ $$
     \end{vmatrix}
     *
     \begin{vmatrix}
-    r & t & s \\\
-    z & y & x \\\
-    w & v & u
+    u & x & s \\\
+    v & y & t \\\
+    w & z & r
     \end{vmatrix}
     $$
 
     $$
     \begin{vmatrix}
-    r*0 & t*0 & s*0 \\\
-    z*a & y*b & x*c \\\
-    w*d & v*e & u*f
+    0*u & 0*x & 0*s \\\
+    a*v & b*y & c*t \\\
+    d*w & e*z & f*r
     \end{vmatrix}
     $$
 
-    Suma: $a*z+b*y+c*x+d*w+e*v+f*u$
+    Suma: $a*v+b*y+c*t+d*w+e*z+f*r$
 
     Opakovat tento postup pro zbylé pozice.
 
 
 ## Korelace
-V lineární algebře odpovídá skalárním součinům.
 
 1. Stejně jako v případě konvoluce, rozšířit matici A o nulové okraje tak, aby bylo možné provést korelaci. Nazvěme tuto matici A_ext.
 
