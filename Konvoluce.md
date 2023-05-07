@@ -100,6 +100,7 @@ $$
 
     Opakovat tento postup pro zbylé pozice.
 
+![konvoluce](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Konvoluce_2rozm_diskretni.jpg/640px-Konvoluce_2rozm_diskretni.jpg)
 
 ## Korelace
 
