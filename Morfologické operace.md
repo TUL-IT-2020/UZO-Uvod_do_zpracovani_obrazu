@@ -2,15 +2,29 @@
 
 ## Na binárním obraze
 https://docs.opencv.org/4.x/d9/d61/tutorial_py_morphological_ops.html
+
 ### Dilatace 
-- samostatně k zaplnění malých děr, úzkých zálivů a pro další
-složitější operace, zvětšuje objekty, pro zachování původních rozměrů >>>
-kombinace s erozí 
+Dilatace skládá body dvou množin pomocí vektorového součtu, $X \oplus B$ je bodovou množinou všech možných vektorových součtů pro dvojice pixelů, pro jeden z $X$ a jeden z $B$.
+$$
+X \oplus B = \{ p \in \varepsilon^2 : p = x + b \};\; x \subseteq X; b \subseteq B
+$$
+
+![[dilatace.PNG]]
+Samostatně slouží k zaplnění malých děr, úzkých zálivů a pro další složitější operace, zvětšuje objekty, pro zachování původních rozměrů ji kombinujeme s erozí.
+
 ![binDilatace](https://user-images.githubusercontent.com/46580540/170106837-7fc97ad2-8ed6-483b-9577-a63de5b398a8.png)
 
 
 ### Eroze 
-- zjednodušení struktury objektů, složitější objekt se rozdělí na několik jednodušších
+Duální operace k dilataci, dilatace ani eroze nejsou invertovatelné, skládá dvě množiny:
+$$
+X \ominus B = \{ p \in \varepsilon^2 : p + b \subseteq X\}  \; pro \; každé \; b \subseteq B
+$$
+Pro každý bod obrazu $p$ se ověřuje, zda výsledek $p + b$ leží v $X$.
+
+![[eroze.PNG]]
+Zjednodušení struktury objektů, složitější objekt se rozdělí na několik jednodušších.
+
 ![binEroze](https://user-images.githubusercontent.com/46580540/170105973-87ab9f34-987d-4bc4-8903-92e8f8db2247.png)
 
 ### Uzavření
