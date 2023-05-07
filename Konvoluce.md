@@ -44,7 +44,7 @@ A_{ext}=
 $$
 
 3. Provést konvoluci matic A_ext a B_transp. Výsledkem bude matice C.
-    Násobit prvky matic B_rot a A_ext, kde se B_rot překrývá s A_ext, a poté provést sumaci.
+    Násobit prvky matic B_transp a A_ext, kde se B_transp překrývá s A_ext, a poté provést sumaci.
 
     **První pozice (horní levý roh A_ext):**
 
