@@ -32,8 +32,8 @@ Rozhodnutí známky 1-3.
 Povolené libovolné vlastnoručně psané materiály. Kalkulačka. 10 jednoduchých příkladů.
 
 Lineární algebra:
-- Konvoluce 
-- Korelace 
+- [[Konvoluce#Konvoluce|Konvoluce]]
+- [[Konvoluce#Korelace|Korelace]]
 - [[Hranové detektory|Hranový detektor]]
 
 [[Barvení objektu|Barvení oblastí]]:

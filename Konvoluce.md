@@ -1,8 +1,5 @@
-<!-- n8vod na pr;chod algoritmem konvoluce -->
-<!-- https://www.youtube.com/watch?v=8rrHTtUzyZA -->
-<!-- https://www.youtube.com/watch?v=7KcN_9V5ZjU -->
-<!-- https://www.youtube.com/watch?v=8rrHTtUzyZA -->
 # Definice
+![[Konvoluace a korelace.PNG]]
 $$
 A=
 \begin{vmatrix}
@@ -103,6 +100,7 @@ $$
 
 
 ## Korelace
+V lineární algebře odpovídá skalárním součinům.
 
 1. Stejně jako v případě konvoluce, rozšířit matici A o nulové okraje tak, aby bylo možné provést korelaci. Nazvěme tuto matici A_ext.
 
@@ -161,3 +159,10 @@ $$
     Suma: $a*x+b*y+c*z+d*s+e*t+f*r$
 
     Opakovat tento postup pro zbylé pozice.
+
+## Zdroje
+Návod na průchod algoritmem konvoluce:
+https://www.youtube.com/watch?v=8rrHTtUzyZA
+https://www.youtube.com/watch?v=7KcN_9V5ZjU
+https://www.youtube.com/watch?v=8rrHTtUzyZA
+https://portal.matematickabiologie.cz/index.php?pg=analyza-a-modelovani-dynamickych-biologickych-dat--signaly-a-linearni-systemy--casove-rady-i--3-zakladni-operace-s-matematickymi-modely-velicin-diskretnich-v-case--3-2-diskretni-konvoluce
