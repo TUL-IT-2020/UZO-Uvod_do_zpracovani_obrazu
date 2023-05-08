@@ -19,14 +19,14 @@ s & t & r
 $$
 
 ## Konvoluce
-1. Vytvoríme matici B_transp, která je transponovanou maticí B.
+1. Vytvoríme matici B_rot, která je rotovanou maticí B o 180.
 
 $$
-B_{transp}=
+B_{rot}=
 \begin{vmatrix}
-u & x & s \\\
-v & y & t \\\
-w & z & r
+r & t & s \\\
+z & y & x \\\
+w & v & u
 \end{vmatrix}
 $$
 
@@ -43,8 +43,8 @@ A_{ext}=
 \end{vmatrix}
 $$
 
-3. Provést konvoluci matic A_ext a B_transp. Výsledkem bude matice C.
-    Násobit prvky matic B_transp a A_ext, kde se B_transp překrývá s A_ext, a poté provést sumaci.
+3. Provést konvoluci matic A_ext a B_rot. Výsledkem bude matice C.
+    Násobit prvky matic B_transp a A_ext, kde se B_rot překrývá s A_ext, a poté provést sumaci.
 
     **První pozice (horní levý roh A_ext):**
 
@@ -56,23 +56,23 @@ $$
     \end{vmatrix}
     *
     \begin{vmatrix}
-    u & x & s \\\
-    v & y & t \\\
-    w & z & r
+    r & t & s \\\
+    z & y & x \\\
+    w & v & u
     \end{vmatrix}
     $$
 
     $$
     \begin{vmatrix}
-    0*u & 0*x & 0*s \\\
-    0*v & a*y & b*t \\\
-    0*w & d*z & e*r
+    0*r & 0*t & 0*s \\\
+    0*z & a*y & b*x \\\
+    0*w & d*v & e*u
     \end{vmatrix}
     $$
 
-    Suma: $a*y+b*t+d*z+e*r$
+    Suma: $a*y+b*x+d*v+e*u$
 
-    **Posunout B_transp o jedno místo doprava a opakovat:**
+    **Posunout B_rot o jedno místo doprava a opakovat:**
 
     $$
     \begin{vmatrix}
@@ -82,21 +82,21 @@ $$
     \end{vmatrix}
     *
     \begin{vmatrix}
-    u & x & s \\\
-    v & y & t \\\
-    w & z & r
+    r & t & s \\\
+    z & y & x \\\
+    w & v & u
     \end{vmatrix}
     $$
 
     $$
     \begin{vmatrix}
-    0*u & 0*x & 0*s \\\
-    a*v & b*y & c*t \\\
-    d*w & e*z & f*r
+    0*r & 0*t & 0*s \\\
+    a*z & b*y & c*x \\\
+    d*w & e*v & f*u
     \end{vmatrix}
     $$
 
-    Suma: $a*v+b*y+c*t+d*w+e*z+f*r$
+    Suma: $a*z+b*y+c*x+d*w+e*v+f*u$
 
     Opakovat tento postup pro zbylé pozice.
 
