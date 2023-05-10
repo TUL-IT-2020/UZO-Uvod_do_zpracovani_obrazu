@@ -31,13 +31,30 @@
 Rozhodnutí známky 1-3.
 Povolené libovolné vlastnoručně psané materiály. Kalkulačka. 10 jednoduchých příkladů.
 
+- Datový tok v obrazu
+- Převod na DPI
+- Vzdálenosti
+- Konvoluce
+- Korelace
+- Filtrace šumu
+- Hranové detektory
+- Morfologické operace
+    - Dilatace
+    - Eroze
+    - Otevření
+    - Uzavření
+- Barvení oblastí:
+    - první průchod
+
+## Poznámky
+[[Transformace jasu]]
+[[Filtrace šumu]]
+[[Barvení objektu|Barvení oblastí]]
+
 Lineární algebra:
 - [[Konvoluce#Konvoluce|Konvoluce]]
 - [[Konvoluce#Korelace|Korelace]]
 - [[Hranové detektory|Hranový detektor]]
-
-[[Barvení objektu|Barvení oblastí]]:
-- první průchod
 
 Vzdálenosti: 
 - [[Metriky#Šachovnicová vzdálenost|Šachovnicová]]
@@ -47,10 +64,6 @@ Vzdálenosti:
 Morfologické operace na jednoduché množině:
 - [[Morfologické operace#Otevření|otevření]]
 - [[Morfologické operace#Uzavření|uzavření]]
-
-## Poznámky
-[[Transformace jasu]]
-[[Filtrace šumu]]
 
 ## Zdroje:
 [[Moderní metody identifikace objektů.pdf]]
